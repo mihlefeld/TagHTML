@@ -17,7 +17,7 @@ def main(comp_id, comp_directory, height, width, update, template_path, exp_emoj
         update_data()
     comp_data = CompetitorData(comp_id, comp_directory)
     r = BS4Renderer(width, height, template_path, exp_emoji_path, format)
-    r.render(comp_data, Path(comp_directory) / "name_tags.html")
+    r.render(comp_data, "name_tags.html")
 
 if __name__ == "__main__":
     main()

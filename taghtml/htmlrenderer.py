@@ -110,7 +110,7 @@ class BS4Renderer:
                 for role, group in eventd.items():
                     content_str = ",".join(group)
                     replace_contents(rtc, f'fill-assignment-{role[0]}', content_str)
-                rtc.find(class_="fill-event-image").attrs['src'] = f"data/svgs/{event}.svg"
+                rtc.find(class_="fill-event-image").attrs['src'] = f"graphics/svgs/{event}.svg"
                 parent.append(rtc)
 
         return nt
