@@ -1,0 +1,111 @@
+<html>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        html {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            --border-style: 1mm dashed black;
+        }
+        .tag {
+            border-bottom: var(--border-style);
+            border-right: var(--border-style);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.2cm;
+        }
+        .comp-name {
+            font-size: small;
+        }
+        .top-border {
+            border-top: var(--border-style);
+        }
+        .left-border {
+            border-left: var(--border-style);
+        }
+        .page {
+            width: 210mm;
+            height: 297mm;
+            display: grid;
+            justify-content: center;
+            align-content: center;
+            grid-template-columns: [left] 9cm [right] 9cm;
+            grid-template-rows: [r1] 5.4cm [r2] 5.4cm [r3] 5.4cm [r4] 5.4cm [r5] 5.4cm;
+        }
+        .emoji {
+            font-family: "Noto Color Emoji", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        .assignments {
+            font-size: 0.3em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        table {
+            border-collapse: collapse;
+            text-align: center;
+        }
+        th {
+            background-color: lightblue;
+        }
+        tr {
+            background-color: lightcoral;
+        }
+        tr:nth-child(even) {
+            background-color: aliceblue;
+        }
+    </style>
+</head>
+<body style="margin: 0;">
+<div id="page-example" class="page">
+    <div id="front-tag" class="tag left-border top-border">
+        <span class="fill-comp-name" style="font-size: x-small;">Example Competition 2024</span>
+        <img class="logo" src="logo.png" style="height: 1.2cm;">
+        <span class="fill-person-name" style="font-size: larger; font-weight: 800;">John Doe</span>
+        <span style="font-size: small;"><span class="fill-wca-id">2024DOEJ1</span> ID: <span class="fill-c-id">15</span></span>
+        <span style="font-size: x-small;"><span class="fill-competition-count">25</span> Competitions <span class="emoji fill-experience-emoji">🦉</span></span>
+        <span style="font-size: x-small;"><span class="fill-country-name">Germany</span> <span class="emoji fill-country-emoji">🇩🇪</span></span>
+    </div>
+
+    <div id="back-tag" class="tag left-border top-border" style="flex-direction: row; align-items: start;">
+        <table style="width: 4cm; font-size: 0.2cm;">
+            <tr>
+                <th>Event</th>
+                <th>C</th>
+                <th>S</th>
+                <th>R</th>
+                <th>J</th>
+            </tr>
+            <tr class="fill-row-template">
+                <td><img class="fill-event-image" src="graphics/svgs/333.svg" style="height: 0.18cm;"></td>
+                <td class="fill-assignment-c"></td>
+                <td class="fill-assignment-s"></td>
+                <td class="fill-assignment-r"></td>
+                <td class="fill-assignment-j"></td>
+            </tr>
+        </table>
+        <div class="assignments" style="width: 4cm;">
+            <div>
+                C = Competitor, S = Scrambler, R = Runner, J = Judge.
+                The table to the left shows first rounds only. Please check WCA
+                Live and competitiongroups.com for information about next
+                rounds. Your following assignments will appear there. Your
+                ID: <span class="fill-c-id">15</span>
+            </div>
+            <div>
+                <img src="graphics/qrcode.png" class="qr_code" style="height: 2.8cm;">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
