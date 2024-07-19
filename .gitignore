@@ -1,3 +1,4 @@
 Competitions/
 .venv/
 data/
+taghtml/__pycache__/
