@@ -12,20 +12,23 @@ from .datahandler import Competitor, CompetitorData
 __TEMPLATE__ = pathlib.Path(__file__).absolute().parent.parent / "template.html"
 __EXP_EMOJI__ = pathlib.Path(__file__).absolute().parent.parent / "experience_emoji.json"
 __FORMATS__ = {
-    "A4": (21.0, 29.7)
-    # "US-Letter": 
+    "A4": (21.0, 29.7),
+    "Letter": (21.59, 27.94)
 }
 
 
 class BS4Renderer:
     def __init__(self, width, height, template_path=__TEMPLATE__, exp_emoji_path=__EXP_EMOJI__, format="A4") -> None:
         self.page_width, self.page_height = __FORMATS__[format]
+        self.tag_width = width
+        self.tag_height = height
         self.columns = int(math.floor(self.page_width / width))
         self.rows = int(math.floor(self.page_height / height))
         self.per_page = self.columns * self.rows
         with open(template_path) as file:
             markup = file.read()
         self.bs = BeautifulSoup(markup, features="html.parser")
+        self.bs.find(name='style').string += "@page {size: " + format + "; margin: 0; }"
         self.front_tag_template = self.bs.find(id='front-tag').extract()
         self.back_tag_template = self.bs.find(id='back-tag').extract()
         self.exp_emoji = json.load(open(exp_emoji_path, encoding="UTF-8"))
@@ -50,21 +53,21 @@ class BS4Renderer:
             current_row.append(competitor)
 
         for page in tqdm.tqdm(pages, desc="Organizing pages"):
-            front_page = Tag(name="div", attrs={'class': 'page'})
-            back_page = Tag(name="div", attrs={'class': 'page'})
+            front_page = Tag(name="div", attrs={'class': 'page', "style": f"width: {self.page_width}cm; height: {self.page_height}cm"})
+            back_page = Tag(name="div", attrs={'class': 'page', "style": f"width: {self.page_width}cm; height: {self.page_height}cm; flex-direction: row-reverse;"})
             for i, row in enumerate(page):
                 for j, competitor in enumerate(row):
                     item = self.replace_fill_tags(self.front_tag_template, competitor, i==0, j==0)
                     front_page.append(item)
-
-                # insert spacer nametags to facilitate correct matching for two-sided printing
-                for j in range(self.columns - len(row)):
-                    back_page.append(Tag(name="div", attrs={"class": "tag", "style": "border: none;"}))
-
-                for j, competitor in enumerate(row[::-1]):
                     item = self.replace_fill_tags(self.back_tag_template, competitor, i==0, j==0)
                     back_page.append(item)
-                
+
+            # insert spacer nametags to facilitate correct matching for two-sided printing
+            for j in range(self.per_page - (len(row) + i * self.columns)):
+                empty_tag = Tag(name="div", attrs={"class": "tag border-top border-left"})
+                back_page.append(copy.copy(empty_tag))
+                front_page.append(empty_tag)
+            
             body.append(front_page)
             body.append(back_page)
 
@@ -93,6 +96,10 @@ class BS4Renderer:
         replace_contents(nt, "fill-country-emoji", countryflag.getflag([competitor.country]))
         replace_contents(nt, "fill-competition-count", competitor.num_competitions)
         replace_contents(nt, "fill-experience-emoji", self.competition_count_to_emoji(competitor.num_competitions))
+        if "style" in nt.attrs:
+            nt.attrs['style'] += f"width: {self.tag_width}cm; height: {self.tag_height}cm;"
+        else:
+            nt.attrs['style'] = f"width: {self.tag_width}cm; height: {self.tag_height}cm;"
         
         row_template = nt.find(class_="fill-row-template")
         if row_template:

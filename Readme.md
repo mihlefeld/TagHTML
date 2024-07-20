@@ -1,9 +1,8 @@
 # TagHTML
 1. Install the requirements: `pip install -r requirements.txt`
 2. Create a folder for you competition.
-3. Download the registration.csv, one time with all selected, one time with only the accepted registrants selected. Move them to the competition directory. In the future, this won't be necessary anymore.
-4. Run the script:
-`python main.py --comp_id <here goes the competition id> --comp_directory <path to the dir created for this> --height <height of the nametags> --width <width of the nametags> --update`
+3. Run the script:
+`python main.py --comp_id <here goes the competition id> --height <height of the nametags> --width <width of the nametags> --update --format <A4/Letter>`
 Only use `--update` when you don't already have a current version of the wca database export in the correct location. 
 5. Open the html file in chrome and print to pdf. Firefox does weird things with the margins.
 

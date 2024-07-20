@@ -35,56 +35,35 @@ class Competitor:
     assignments: List[Assignment]
 
 class CompetitorData:
-    def __init__(self, comp_id, directory) -> None:
+    def __init__(self, comp_id) -> None:
         self.data = None
         self.competitor_assignments = None
         self.comp_id = comp_id
-        self.directory = pathlib.Path(directory)
         self.comp_name = None
         self.prepare_data()
         self.index = 0
         pass
 
     def prepare_data(self):
-        # read the registration exports to get competitor ids
-        full_reg: pl.DataFrame = None
-        accepted_reg: pl.DataFrame = None
-        regs = []
-        for path in self.directory.glob(f"{self.comp_id}-registration*.csv"):
-            reg = pl.read_csv(path, separator=',')
-            reg = reg.sort("Registration Date Time (UTC)")
-            regs.append(reg)
-        regs = sorted(regs, key=lambda x: len(x))
-        accepted_reg, full_reg = regs
-        competitor_data = (
-            accepted_reg.join(
-                full_reg.with_row_index(), 
-                on=(pl.col("Registration Date Time (UTC)") + pl.col("Name"))
-            ).with_columns(
-                pl.col("WCA ID").fill_null("Newcomer") # replace null wca id with newcomer
-            )
-        )
+        comp_data = json.loads(requests.request("GET", f'https://worldcubeassociation.org/api/v0/competitions/{self.comp_id}/wcif/public').content)
+        competitor_data = pl.DataFrame(comp_data['persons'])
 
         # count the number of competitions each competitor has been to
         comp_counts = (
             pl.scan_csv(_DATA_ / "WCA_export_Results.tsv", separator="\t")
             .group_by(['personId'])
             .agg(
-                pl.col("competitionId").n_unique().alias("#Competitions")
+                pl.col("competitionId").n_unique().alias("numComps")
                 ))
         self.data = (
             competitor_data.lazy()
-            .join(comp_counts, left_on="WCA ID", right_on="personId", how="left")
-            .select(
-                pl.col("index").alias("ID") + 1,
-                "WCA ID", "Name", "Country",
-                pl.col("#Competitions").fill_null(0) + 1
-            )
-            .sort("Name")
+            .join(comp_counts, left_on="wcaId", right_on="personId", how="left")
+            .join(pl.scan_csv(_DATA_ / "WCA_export_Countries.tsv", separator="\t"), left_on='countryIso2', right_on='iso2')
+            .select('registrantId', 'wcaId', 'name', pl.col("id").alias("country"), pl.col("numComps").fill_null(0) + 1)
+            .sort("name")
             .collect()
         )
-
-        comp_data = json.loads(requests.request("GET", f'https://worldcubeassociation.org/api/v0/competitions/{self.comp_id}/wcif/public').content)
+        
         activities = {}
         for venue in comp_data['schedule']['venues']:
             	for room in venue['rooms']:

@@ -4,10 +4,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
     <style>
-        @page {
-            size: A4;
-            margin: 0;
-        }
         html {
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
             --border-style: 1mm dashed black;
@@ -19,10 +15,10 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 0.2cm;
-        }
-        .comp-name {
-            font-size: small;
+            padding: 0.2cm; 
+            box-sizing: border-box; /* don't change otherwise height and width are wrong */
+            width: 9cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
+            height: 5.4cm;
         }
         .top-border {
             border-top: var(--border-style);
@@ -31,18 +27,13 @@
             border-left: var(--border-style);
         }
         .page {
-            width: 210mm;
-            height: 297mm;
-            display: grid;
             justify-content: center;
             align-content: center;
-            grid-template-columns: [left] 9cm [right] 9cm;
-            grid-template-rows: [r1] 5.4cm [r2] 5.4cm [r3] 5.4cm [r4] 5.4cm [r5] 5.4cm;
+            display: flex;
+            flex-wrap: wrap;
         }
         .emoji {
             font-family: "Noto Color Emoji", sans-serif;
-            font-weight: 400;
-            font-style: normal;
         }
         .assignments {
             font-size: 0.2cm;
@@ -55,13 +46,13 @@
             text-align: center;
         }
         th {
-            background-color: lightblue;
-        }
-        tr {
             background-color: lightcoral;
         }
+        tr {
+            background-color: lightpink;
+        }
         tr:nth-child(even) {
-            background-color: aliceblue;
+            background-color: white;
         }
     </style>
 </head>
