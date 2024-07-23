@@ -4,6 +4,7 @@ import requests
 import zipfile
 import polars as pl
 import json
+import warnings
 from typing import List, Dict
 from dataclasses import dataclass
 
@@ -68,8 +69,8 @@ class CompetitorData:
         for venue in comp_data['schedule']['venues']:
             	for room in venue['rooms']:
                     for activity in room["activities"]:
-                        for child_activity in activity['childActivities']:
-                            event, round_, group = child_activity['activityCode'].split('-')
+                        for child_activity in activity['childActivities']:                      
+                            event, round_, group = child_activity['activityCode'].split('-')[:3]
                             activities[child_activity['id']] = {
                                 'event': event,
                                 'round': int(round_[1:]),
@@ -79,9 +80,13 @@ class CompetitorData:
         for person in comp_data['persons']:
             person_assignments = []
             for assignment in person['assignments']:
-                activity = activities[assignment['activityId']]
-                role = assignment['assignmentCode']
-                person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role))
+                activity_id = assignment['activityId']
+                try:
+                    activity = activities[activity_id]
+                    role = assignment['assignmentCode']
+                    person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role))
+                except KeyError as e:
+                    warnings.warn("Assignments other than competitor/judge/scrambler are not yet supported")
             competitor_assignments[person['registrantId']] = person_assignments
         self.competitor_assignments = competitor_assignments
         self.comp_name = comp_data['shortName']

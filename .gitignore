@@ -4,3 +4,4 @@ data/
 taghtml/__pycache__/
 name_tags.html
 name_tags.html.pdf
+.vscode/
