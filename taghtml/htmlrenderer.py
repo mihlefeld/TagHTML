@@ -1,6 +1,5 @@
 import pathlib
 import math
-import countryflag
 import copy
 import json
 import tqdm
