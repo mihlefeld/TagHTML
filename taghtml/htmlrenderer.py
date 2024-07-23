@@ -88,6 +88,7 @@ class BS4Renderer:
         def replace_contents(tg, cls, content):
             for x in tg.find_all(class_=cls):
                 x.string = NavigableString(str(content))
+        
         replace_contents(nt, "fill-comp-name", self.comp_name)
         replace_contents(nt, "fill-person-name", competitor.name)
         replace_contents(nt, "fill-wca-id", competitor.wca_id)

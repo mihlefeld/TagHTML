@@ -4,7 +4,7 @@ from taghtml.datahandler import update_data, CompetitorData
 from taghtml.htmlrenderer import BS4Renderer
 
 @click.command()
-@click.option("--comp_id", help="Competition ID from the competition link.", default="DarmstadtDodecaHedronDays2024")
+@click.option("--comp_id", help="Competition ID from the competition link.")
 @click.option("--height", help="Height of each nametag", default=5.4)
 @click.option("--width", help="Width of each nametag", default=9.0)
 @click.option("--update/--no_update", help="Set this flag if the daabase needs to be updated.", default=False)
