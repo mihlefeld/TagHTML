@@ -32,6 +32,7 @@ class Competitor:
     wca_id: int
     name: str
     country: str
+    iso2: str
     num_competitions: int
     assignments: List[Assignment]
 
@@ -60,7 +61,7 @@ class CompetitorData:
             competitor_data.lazy()
             .join(comp_counts, left_on="wcaId", right_on="personId", how="left")
             .join(pl.scan_csv(_DATA_ / "WCA_export_Countries.tsv", separator="\t"), left_on='countryIso2', right_on='iso2')
-            .select('registrantId', 'wcaId', 'name', pl.col("id").alias("country"), pl.col("numComps").fill_null(0) + 1)
+            .select('registrantId', 'wcaId', 'name', pl.col("id").alias("country"), pl.col("countryIso2").alias('iso2'), pl.col("numComps").fill_null(0) + 1)
             .sort("name")
             .collect()
         )
@@ -92,8 +93,8 @@ class CompetitorData:
         self.comp_name = comp_data['shortName']
 
     def __getitem__(self, key: int) -> Competitor:
-        idx, wca_id, name, country, num_competitions = self.data.row(key)
-        return Competitor(idx, wca_id, name, country, num_competitions, self.competitor_assignments[idx])
+        idx, wca_id, name, country, iso2, num_competitions = self.data.row(key)
+        return Competitor(idx, wca_id, name, country, iso2, num_competitions, self.competitor_assignments[idx])
 
     def __len__(self):
         return self.data.shape[0]

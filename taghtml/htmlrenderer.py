@@ -16,6 +16,9 @@ __FORMATS__ = {
     "Letter": (21.59, 27.94)
 }
 
+def iso2flag(iso2: str):
+    return ''.join([chr(127397 + ord(c)) for c in iso2.upper()])
+
 
 class BS4Renderer:
     def __init__(self, width, height, template_path=__TEMPLATE__, exp_emoji_path=__EXP_EMOJI__, format="A4") -> None:
@@ -94,7 +97,7 @@ class BS4Renderer:
         replace_contents(nt, "fill-wca-id", competitor.wca_id)
         replace_contents(nt, "fill-c-id", competitor.idx)
         replace_contents(nt, "fill-country-name", competitor.country)
-        replace_contents(nt, "fill-country-emoji", countryflag.getflag([competitor.country]))
+        replace_contents(nt, "fill-country-emoji", iso2flag(competitor.iso2))
         replace_contents(nt, "fill-competition-count", competitor.num_competitions)
         replace_contents(nt, "fill-experience-emoji", self.competition_count_to_emoji(competitor.num_competitions))
         if "style" in nt.attrs:
