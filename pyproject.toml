@@ -1,0 +1,20 @@
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "taghtml"
+authors = [{name = "Malte Ihlefeld"}]
+readme = "Readme.md"
+license = "MIT"
+license-files = ["LICENSE"]
+dynamic = ["version", "description"]
+dependencies = [
+    "polars",
+    "requests",
+    "typer",
+    "beautifulsoup4"
+]
+
+[project.scripts]
+taghtml = "taghtml.cli:app"

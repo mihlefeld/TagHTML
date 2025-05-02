@@ -5,6 +5,9 @@ import zipfile
 import polars as pl
 import json
 import warnings
+from rich.progress import track
+from rich.spinner import Spinner
+from rich.progress import Progress
 from typing import List, Dict
 from dataclasses import dataclass
 
@@ -12,12 +15,19 @@ _DATA_ = (pathlib.Path(__file__).parent.parent / "data").absolute()
 
 
 def update_data():
-    os.makedirs(_DATA_, exist_ok=True)
-    r = requests.get("https://www.worldcubeassociation.org/export/results/WCA_export.tsv.zip")
-    with open(_DATA_ / "export.zip", "wb") as file:
-        file.write(r.content)
-    with zipfile.ZipFile(_DATA_ / "export.zip", "r") as file:
-        file.extractall(_DATA_)
+    with Progress() as p:
+        ted = p.add_task("Downloading export", total=1)
+        os.makedirs(_DATA_, exist_ok=True)
+        r = requests.get("https://www.worldcubeassociation.org/export/results/WCA_export.tsv.zip")
+        p.update(ted, completed=1)
+        twf = p.add_task("Writing to file", total=1)
+        with open(_DATA_ / "export.zip", "wb") as file:
+            file.write(r.content)
+        p.update(twf, completed=1)
+        ext = p.add_task("Extracting", total=1)
+        with zipfile.ZipFile(_DATA_ / "export.zip", "r") as file:
+            file.extractall(_DATA_)
+        p.update(ext, completed=1)
 
 @dataclass
 class Assignment:
@@ -44,7 +54,6 @@ class CompetitorData:
         self.comp_name = None
         self.prepare_data()
         self.index = 0
-        pass
 
     def prepare_data(self):
         comp_data = json.loads(requests.request("GET", f'https://worldcubeassociation.org/api/v0/competitions/{self.comp_id}/wcif/public').content)

@@ -1,6 +1,0 @@
-polars
-requests
-click
-countryflag
-tqdm
-beautifulsoup4

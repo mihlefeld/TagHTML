@@ -2,7 +2,8 @@ import pathlib
 import math
 import copy
 import json
-import tqdm
+from pathlib import Path
+from rich.progress import Progress
 from collections import defaultdict
 from typing import List
 from bs4 import BeautifulSoup, Tag, NavigableString
@@ -14,9 +15,10 @@ __FORMATS__ = {
     "A4": (21.0, 29.7),
     "Letter": (21.59, 27.94)
 }
+__FLAG_BASE_CODE__ = 127397
 
 def iso2flag(iso2: str):
-    return ''.join([chr(127397 + ord(c)) for c in iso2.upper()])
+    return ''.join([chr(__FLAG_BASE_CODE__ + ord(c)) for c in iso2.upper()])
 
 
 class BS4Renderer:
@@ -36,7 +38,7 @@ class BS4Renderer:
         self.exp_emoji = json.load(open(exp_emoji_path, encoding="UTF-8"))
     
 
-    def render(self, competitors: CompetitorData, out_path):
+    def render(self, competitors: CompetitorData, out_path, progress: Progress):
         self.comp_name = competitors.comp_name
         body = Tag(name="body")
         front_page = None
@@ -54,7 +56,7 @@ class BS4Renderer:
                 current_page = []
             current_row.append(competitor)
 
-        for page in tqdm.tqdm(pages, desc="Organizing pages"):
+        for page in progress.track(pages, description="Organizing pages"):
             front_page = Tag(name="div", attrs={'class': 'page', "style": f"width: {self.page_width}cm; height: {self.page_height}cm"})
             back_page = Tag(name="div", attrs={'class': 'page', "style": f"width: {self.page_width}cm; height: {self.page_height}cm; flex-direction: row-reverse;"})
             for i, row in enumerate(page):
@@ -120,7 +122,7 @@ class BS4Renderer:
                 for role, group in eventd.items():
                     content_str = ",".join(group)
                     replace_contents(rtc, f'fill-assignment-{role[0]}', content_str)
-                rtc.find(class_="fill-event-image").attrs['src'] = f"graphics/svgs/{event}.svg"
+                rtc.find(class_="fill-event-image").attrs['src'] = Path(__file__).parent.parent / f"graphics/svgs/{event}.svg"
                 parent.append(rtc)
 
         return nt
