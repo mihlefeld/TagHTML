@@ -6,21 +6,18 @@
     <style>
         html {
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            --border-style: 1mm none;
+            --border-style: none;
         }
         .tag {
-            border-bottom: var(--border-style);
-            border-right: var(--border-style);
-            border-radius: 0.4cm;
-            background-color: lightgreen;
+            border-radius: 0.2cm;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 0.2cm; 
+            padding: 0.2cm;
             box-sizing: border-box; /* don't change otherwise height and width are wrong */
-            width: 8.3cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
-            height: 4.8cm;
+            width: 9.0143cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
+            height: 5.7219cm;
         }
         .top-border {
             border-top: var(--border-style);
@@ -57,15 +54,40 @@
         tr:nth-child(even) {
             background-color: white;
         }
+        .competitor {
+            background-image: url('graphics/competitor_base.png');
+            background-position: center;
+            background-size: contain;
+        }
+        .fp-name {
+            background: linear-gradient(90deg,rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 100%); 
+            position: relative;   
+            left: 3.4cm;
+            top: 1.2cm;
+            max-width: 4.5cm;
+            text-align: center;
+            padding: 0.2cm;
+        }
+        .flag img {
+            width: 1cm;
+        }
     </style>
 </head>
 <body style="margin: 0;">
 <div id="page-example" class="page">
-    <div id="front-tag" class="tag left-border top-border replace-class-competition-role">
-        <img class="logo" src="graphics/logo.png" style="height: 1.2cm;">
-        <span class="fill-person-name" style="font-size: larger; font-weight: 800; text-align: center;">John Doe</span>
-        <span style="font-size: x-small;"><span class="emoji fill-experience-emoji">🦉</span></span>
-        <span style="font-size: x-small;"><span class="fill-country-name">Germany</span> <span class="emoji fill-country-emoji">🇩🇪</span></span>
+
+    <div id="front-tag" class="tag left-border top-border competitor replace-class-competition-role" style="display: unset; position: relative;">
+        <div>
+            <div class="fp-name">
+                <div style="display: flex; flex-direction: column; gap: 0.05cm;">
+                    <span class="fill-person-name" style="font-size: larger; font-weight: 800; text-align: center;">John Doe</span>
+                    <span style="align-items: center; display: flex; justify-content: center; gap: 0.1cm;">
+                        <span class="fill-country-flag flag"><img src="graphics/flags/de.png"></span>
+                        <span style="font-size: medium;"><span class="emoji fill-experience-emoji">🦉</span>
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="back-tag" class="tag left-border top-border replace-class-competition-role" style="flex-direction: column; align-items: start; writing-mode: vertical-rl;">

@@ -92,6 +92,12 @@ class BS4Renderer:
         def replace_contents(tg, cls, content):
             for x in tg.find_all(class_=cls):
                 x.string = NavigableString(str(content))
+        
+        def replace_children(tg, cls, content):
+            for x in tg.find_all(class_=cls):
+                x: Tag
+                x.clear()
+                x.append(content)
 
         def replace_class(tg: Tag, cls, replacement):
             if cls in tg["class"]:
@@ -108,6 +114,7 @@ class BS4Renderer:
         replace_contents(nt, "fill-country-emoji", iso2flag(competitor.iso2))
         replace_contents(nt, "fill-competition-count", competitor.num_competitions)
         replace_contents(nt, "fill-experience-emoji", self.competition_count_to_emoji(competitor.num_competitions))
+        replace_children(nt, "fill-country-flag", Tag(name="img", attrs={"src": f"graphics/flags/{competitor.iso2.lower()}.png"}))
         replace_class(nt, "replace-class-competition-role", competitor.roles)
         if "style" in nt.attrs:
             nt.attrs['style'] += f"width: {self.tag_width}cm; height: {self.tag_height}cm;"
@@ -130,7 +137,7 @@ class BS4Renderer:
                 for role, group in eventd.items():
                     content_str = ",".join(group)
                     replace_contents(rtc, f'fill-assignment-{role[0]}', content_str)
-                rtc.find(class_="fill-event-image").attrs['src'] = Path(__file__).parent.parent / f"graphics/svgs/{event}.svg"
+                rtc.find(class_="fill-event-image").attrs['src'] = f"graphics/svgs/{event}.svg"
                 parent.append(rtc)
 
         return nt
