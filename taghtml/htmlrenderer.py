@@ -92,6 +92,13 @@ class BS4Renderer:
         def replace_contents(tg, cls, content):
             for x in tg.find_all(class_=cls):
                 x.string = NavigableString(str(content))
+
+        def replace_class(tg: Tag, cls, replacement):
+            if cls in tg["class"]:
+                tg["class"] = [class_name for class_name in tg["class"] + replacement if class_name != cls]
+            for x in tg.find_all(class_=cls):
+                x: Tag
+                x["class"] = [class_name for class_name in x["class"] + replacement if class_name != cls]
         
         replace_contents(nt, "fill-comp-name", self.comp_name)
         replace_contents(nt, "fill-person-name", competitor.name)
@@ -101,6 +108,7 @@ class BS4Renderer:
         replace_contents(nt, "fill-country-emoji", iso2flag(competitor.iso2))
         replace_contents(nt, "fill-competition-count", competitor.num_competitions)
         replace_contents(nt, "fill-experience-emoji", self.competition_count_to_emoji(competitor.num_competitions))
+        replace_class(nt, "replace-class-competition-role", competitor.roles)
         if "style" in nt.attrs:
             nt.attrs['style'] += f"width: {self.tag_width}cm; height: {self.tag_height}cm;"
         else:

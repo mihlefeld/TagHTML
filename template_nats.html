@@ -6,19 +6,21 @@
     <style>
         html {
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            --border-style: 1mm dashed black;
+            --border-style: 1mm none;
         }
         .tag {
             border-bottom: var(--border-style);
             border-right: var(--border-style);
+            border-radius: 0.4cm;
+            background-color: lightgreen;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
             padding: 0.2cm; 
             box-sizing: border-box; /* don't change otherwise height and width are wrong */
-            width: 9cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
-            height: 5.4cm;
+            width: 8.3cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
+            height: 4.8cm;
         }
         .top-border {
             border-top: var(--border-style);
@@ -31,6 +33,7 @@
             align-content: center;
             display: flex;
             flex-wrap: wrap;
+            gap: 0.1cm;
         }
         .emoji {
             font-family: "Noto Color Emoji", sans-serif;
@@ -59,16 +62,14 @@
 <body style="margin: 0;">
 <div id="page-example" class="page">
     <div id="front-tag" class="tag left-border top-border replace-class-competition-role">
-        <span class="fill-comp-name" style="font-size: x-small;">Example Competition 2024</span>
         <img class="logo" src="graphics/logo.png" style="height: 1.2cm;">
         <span class="fill-person-name" style="font-size: larger; font-weight: 800; text-align: center;">John Doe</span>
-        <span style="font-size: small;"><span class="fill-wca-id">2024DOEJ1</span> ID: <span class="fill-c-id">15</span></span>
-        <span style="font-size: x-small;"><span class="fill-competition-count">25</span> Competitions <span class="emoji fill-experience-emoji">🦉</span></span>
+        <span style="font-size: x-small;"><span class="emoji fill-experience-emoji">🦉</span></span>
         <span style="font-size: x-small;"><span class="fill-country-name">Germany</span> <span class="emoji fill-country-emoji">🇩🇪</span></span>
     </div>
 
-    <div id="back-tag" class="tag left-border top-border replace-class-competition-role" style="flex-direction: row; align-items: start;">
-        <table style="width: 6cm; font-size: 0.2cm;">
+    <div id="back-tag" class="tag left-border top-border replace-class-competition-role" style="flex-direction: column; align-items: start; writing-mode: vertical-rl;">
+        <table style="height: 4cm; font-size: 0.2cm;">
             <tr>
                 <th>Event</th>
                 <th>Cmp.</th>
