@@ -14,6 +14,8 @@ def main(
         update: Annotated[bool, typer.Option(help="Set this flag to update the database before generating the nametags.")] = False, 
         template_path: Annotated[Path, typer.Option(help="Path to the html template file.")] = Path("template.html"), 
         experience_emoji_path: Annotated[Path, typer.Option("--experience-emoji-path", "--emp", help="Path to the json file mapping a number of competitions to an emoji.")] = "experience_emoji.json", 
+        people_emoji_path: Annotated[Path, typer.Option("--people-emoji-path", "--emp", help="Path to the json file mapping a number of competitions to an emoji.")] = "people_emoji.json", 
+        cid_modulo_emoji_path: Annotated[Path, typer.Option("--cid-modulo-emoji-path", "--emp", help="Path to the json file mapping a number of competitions to an emoji.")] = "cid_modulo_emoji.json", 
         format: Annotated[str, typer.Option(help="Page format to use for printing")] = "A4",
         
     ):    
@@ -27,7 +29,7 @@ def main(
         comp_data = CompetitorData(comp_id)
         p.update(cod, completed=100)
         inr = p.add_task("Initializing renderer.")
-        r = BS4Renderer(width, height, template_path, experience_emoji_path, format)
+        r = BS4Renderer(width, height, template_path, experience_emoji_path, people_emoji_path, cid_modulo_emoji_path, format)
         p.update(inr, completed=100)
         os.makedirs(output_path.parent, exist_ok=True)
         rth =  p.add_task("Rendering to HTML.")

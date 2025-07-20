@@ -11,6 +11,8 @@ from .datahandler import Competitor, CompetitorData
 
 __TEMPLATE__ = pathlib.Path(__file__).absolute().parent.parent / "template.html"
 __EXP_EMOJI__ = pathlib.Path(__file__).absolute().parent.parent / "experience_emoji.json"
+__PEOPLE_EMOJI__ = pathlib.Path(__file__).absolute().parent.parent / "people_emoji.json"
+__CID_MODULO_EMOJI__ = pathlib.Path(__file__).absolute().parent.parent / "cid_modulo_emoji.json"
 __FORMATS__ = {
     "A4": (21.0, 29.7),
     "Letter": (21.59, 27.94)
@@ -20,22 +22,43 @@ __FLAG_BASE_CODE__ = 127397
 def iso2flag(iso2: str):
     return ''.join([chr(__FLAG_BASE_CODE__ + ord(c)) for c in iso2.upper()])
 
+def prepare_name(name: str):
+    no_original_name = name.split(" (")[0]
+    parts = no_original_name.split()
+    ret = Tag(name="span")
+    if len(parts) == 2:
+        ret.append(NavigableString(parts[0]))
+        ret.append(BeautifulSoup("<br>", 'html.parser').br)
+        ret.append(NavigableString(parts[1]))
+        return ret
+    ret.string = NavigableString(no_original_name)
+    return ret
+
 
 class BS4Renderer:
-    def __init__(self, width, height, template_path=__TEMPLATE__, exp_emoji_path=__EXP_EMOJI__, format="A4") -> None:
+    def __init__(
+            self, width, height, template_path=__TEMPLATE__, 
+            exp_emoji_path=__EXP_EMOJI__, people_emoji_path=__PEOPLE_EMOJI__,
+            cid_modulo_emoji_path=__CID_MODULO_EMOJI__, format="A4") -> None:
         self.page_width, self.page_height = __FORMATS__[format]
         self.tag_width = width
         self.tag_height = height
         self.columns = int(math.floor(self.page_width / width))
         self.rows = int(math.floor(self.page_height / height))
         self.per_page = self.columns * self.rows
-        with open(template_path) as file:
+        with open(template_path, encoding="utf-8") as file:
             markup = file.read()
         self.bs = BeautifulSoup(markup, features="html.parser")
         self.bs.find(name='style').string += "@page {size: " + format + "; margin: 0; }"
         self.front_tag_template = self.bs.find(id='front-tag').extract()
         self.back_tag_template = self.bs.find(id='back-tag').extract()
         self.exp_emoji = json.load(open(exp_emoji_path, encoding="UTF-8"))
+        self.people_emoji: dict = json.load(open(people_emoji_path, encoding="UTF-8"))
+        assert isinstance(self.people_emoji, dict)
+        self.cid_modulo_emoji = json.load(open(cid_modulo_emoji_path, encoding="UTF-8"))
+        if isinstance(self.cid_modulo_emoji, dict):
+            self.cid_modulo_emoji = list(self.cid_modulo_emoji.values())
+    
     
 
     def render(self, competitors: CompetitorData, out_path, progress: Progress):
@@ -107,13 +130,15 @@ class BS4Renderer:
                 x["class"] = [class_name for class_name in x["class"] + replacement if class_name != cls]
         
         replace_contents(nt, "fill-comp-name", self.comp_name)
-        replace_contents(nt, "fill-person-name", competitor.name)
+        replace_children(nt, "fill-person-name", prepare_name(competitor.name))
         replace_contents(nt, "fill-wca-id", competitor.wca_id)
-        replace_contents(nt, "fill-c-id", competitor.idx)
+        replace_contents(nt, "fill-c-id", competitor.idx if competitor.idx is not None else "")
         replace_contents(nt, "fill-country-name", competitor.country)
         replace_contents(nt, "fill-country-emoji", iso2flag(competitor.iso2))
         replace_contents(nt, "fill-competition-count", competitor.num_competitions)
         replace_contents(nt, "fill-experience-emoji", self.competition_count_to_emoji(competitor.num_competitions))
+        replace_contents(nt, "fill-cid-modulo-emoji", self.cid_modulo_emoji[competitor.idx % len(self.cid_modulo_emoji)] if competitor.idx is not None else "")
+        replace_contents(nt, "fill-people-emoji", self.people_emoji.get(competitor.wca_id, ""))
         replace_children(nt, "fill-country-flag", Tag(name="img", attrs={"src": f"graphics/flags/{competitor.iso2.lower()}.png"}))
         replace_class(nt, "replace-class-competition-role", competitor.roles)
         if "style" in nt.attrs:

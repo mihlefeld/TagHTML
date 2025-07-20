@@ -7,8 +7,13 @@
         html {
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
             --border-style: none;
+            margin: 0;
+        }
+        body {
+            margin: 0;
         }
         .tag {
+            box-sizing: border-box;
             border-radius: 0.2cm;
             display: flex;
             flex-direction: column;
@@ -16,8 +21,8 @@
             justify-content: space-between;
             padding: 0.2cm;
             box-sizing: border-box; /* don't change otherwise height and width are wrong */
-            width: 9.0143cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
-            height: 5.7219cm;
+            width: 8.5cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
+            height: 5.5cm;
         }
         .top-border {
             border-top: var(--border-style);
@@ -30,7 +35,6 @@
             align-content: center;
             display: flex;
             flex-wrap: wrap;
-            gap: 0.1cm;
         }
         .emoji {
             font-family: "Noto Color Emoji", sans-serif;
@@ -54,65 +58,96 @@
         tr:nth-child(even) {
             background-color: white;
         }
-        .competitor {
+        #front-tag.competitor {
             background-image: url('graphics/competitor_base.png');
             background-position: center;
             background-size: contain;
         }
+        #front-tag.organizer {
+            background-image: url('graphics/delegate_organizer_base.png');
+            background-position: center;
+            background-size: contain;
+        }
+        #front-tag.delegate {
+            background-image: url('graphics/delegate_organizer_base.png');
+            background-position: center;
+            background-size: contain;
+        }
+        .bg-fade {
+            background: linear-gradient(90deg,rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 100%);
+            padding: 0.05cm;
+        }
         .fp-name {
-            background: linear-gradient(90deg,rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 100%); 
-            position: relative;   
+            position: absolute;   
+            top: 0;
+            box-sizing: border-box;
             left: 3.4cm;
-            top: 1.2cm;
             max-width: 4.5cm;
             text-align: center;
             padding: 0.2cm;
+            height: 100%;
+            width: 100%;
         }
         .flag img {
-            width: 1cm;
+            max-width: 1.5cm;
+            max-height: 1.1cm;
+            box-shadow: 0 0 0.1cm 0.05cm rgba(255, 255, 255, 0.7);
+        }
+        #back-tag {
+            border: 1px solid black;
+        }
+        #front-tag {
+            border: 1px solid black;
+        }
+        .rotated-text {
+            writing-mode: vertical-rl;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     </style>
 </head>
 <body style="margin: 0;">
-<div id="page-example" class="page">
-
+    <div id="page-example" class="page">
+        
     <div id="front-tag" class="tag left-border top-border competitor replace-class-competition-role" style="display: unset; position: relative;">
-        <div>
-            <div class="fp-name">
-                <div style="display: flex; flex-direction: column; gap: 0.05cm;">
-                    <span class="fill-person-name" style="font-size: larger; font-weight: 800; text-align: center;">John Doe</span>
-                    <span style="align-items: center; display: flex; justify-content: center; gap: 0.1cm;">
-                        <span class="fill-country-flag flag"><img src="graphics/flags/de.png"></span>
+        <span class="fill-c-id" style="position: absolute;">325</span>
+        <div class="fp-name" style="display: flex; align-items: center;">
+            <div style="display: flex; flex-direction: column; gap: 0.15cm; width: 100%;">
+                <div class="bg-fade">
+                    <span class="fill-person-name" style="font-size: larger; font-weight: 800; text-align: center;">Harald Lorenzen Mastoff-Steinschmidt</span>
+                    <div style="align-items: center; display: flex; justify-content: center; gap: 0.1cm;">
                         <span style="font-size: medium;"><span class="emoji fill-experience-emoji">🦉</span>
-                    </span>
+                        <span style="font-size: medium;"><span class="emoji fill-cid-modulo-emoji">🍉</span>
+                        <span style="font-size: medium;"><span class="emoji fill-people-emoji">🥇</span>
+                    </div>
                 </div>
+                <div class="fill-country-flag flag"><img src="graphics/flags/in.png"></div>
             </div>
         </div>
     </div>
-
-    <div id="back-tag" class="tag left-border top-border replace-class-competition-role" style="flex-direction: column; align-items: start; writing-mode: vertical-rl;">
-        <table style="height: 4cm; font-size: 0.2cm;">
-            <tr>
-                <th>Event</th>
-                <th>Cmp.</th>
-                <th>Scr.</th>
-                <th>Run.</th>
-                <th>Jud.</th>
-            </tr>
-            <tr class="fill-row-template">
-                <td><img class="fill-event-image" src="graphics/svgs/333.svg" style="height: 0.18cm;"></td>
-                <td class="fill-assignment-c"></td>
-                <td class="fill-assignment-s"></td>
-                <td class="fill-assignment-r"></td>
-                <td class="fill-assignment-j"></td>
-            </tr>
-        </table>
-        <div class="assignments" style="width: 2cm;">
-            <div>
-                Check live results and assignments here.<br>
-                <span class="fill-person-name">John Doe</span> ID: <span class="fill-c-id">15</span>
-            </div>
-            <div>
+    
+    <div id="back-tag" class="tag left-border top-border replace-class-competition-role">
+        <div class="rotated-text">
+            <table style="height: 4cm; font-size: 0.2cm;">
+                <tr>
+                    <th>Event</th>
+                    <th>Cmp.</th>
+                    <th>Scr.</th>
+                    <th>Run.</th>
+                    <th>Jud.</th>
+                </tr>
+                <tr class="fill-row-template">
+                    <td><img class="fill-event-image" src="graphics/svgs/333.svg" style="height: 0.18cm;"></td>
+                    <td class="fill-assignment-c"></td>
+                    <td class="fill-assignment-s"></td>
+                    <td class="fill-assignment-r"></td>
+                    <td class="fill-assignment-j"></td>
+                </tr>
+            </table>
+            <div class="assignments" style="width: 2cm;">
                 <img src="graphics/qrcode.png" class="qr_code" style="height: 1.4cm;">
             </div>
         </div>
