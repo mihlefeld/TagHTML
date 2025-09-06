@@ -7,7 +7,7 @@ from rich.progress import Progress
 from collections import defaultdict
 from typing import List
 from bs4 import BeautifulSoup, Tag, NavigableString
-from .datahandler import Competitor, CompetitorData
+from .datahandler import Competitor, CompetitorData, Assignment
 
 __TEMPLATE__ = pathlib.Path(__file__).absolute().parent.parent / "template.html"
 __EXP_EMOJI__ = pathlib.Path(__file__).absolute().parent.parent / "experience_emoji.json"
@@ -78,6 +78,9 @@ class BS4Renderer:
                     pages.append(current_page)
                 current_page = []
             current_row.append(competitor)
+        if len(current_row) != 0:
+            current_page.append(current_row)
+            pages.append(current_page)
 
         for page in progress.track(pages, description="Organizing pages"):
             front_page = Tag(name="div", attrs={'class': 'page', "style": f"width: {self.page_width}cm; height: {self.page_height}cm"})
@@ -120,7 +123,7 @@ class BS4Renderer:
             for x in tg.find_all(class_=cls):
                 x: Tag
                 x.clear()
-                x.append(content)
+                x.append(copy.copy(content))
 
         def replace_class(tg: Tag, cls, replacement):
             if cls in tg["class"]:
@@ -131,6 +134,7 @@ class BS4Renderer:
         
         replace_contents(nt, "fill-comp-name", self.comp_name)
         replace_children(nt, "fill-person-name", prepare_name(competitor.name))
+        replace_contents(nt, "fill-person-name-direct", competitor.name)
         replace_contents(nt, "fill-wca-id", competitor.wca_id)
         replace_contents(nt, "fill-c-id", competitor.idx if competitor.idx is not None else "")
         replace_contents(nt, "fill-country-name", competitor.country)
@@ -141,6 +145,22 @@ class BS4Renderer:
         replace_contents(nt, "fill-people-emoji", self.people_emoji.get(competitor.wca_id, ""))
         replace_children(nt, "fill-country-flag", Tag(name="img", attrs={"src": f"graphics/flags/{competitor.iso2.lower()}.png"}))
         replace_class(nt, "replace-class-competition-role", competitor.roles)
+        grouped_assignments: dict[(str, str), list[Assignment]] = defaultdict(list)
+        for assignment in competitor.assignments:
+            grouped_assignments[(assignment.event, assignment.round)].append(assignment)
+        for (event, round), assignment_group in grouped_assignments.items():
+            for assignment in assignment_group:
+                if assignment.role[0].lower() == "c":
+                    replace_contents(nt, f"fill-{event}-r{round}-c-assignment", assignment.group)
+            assignment = assignment_group[0]
+            replace_contents(nt, f"fill-{event}-r{round}-time", assignment.start_time.strftime("%a %H:%M"))
+            help_assignments = []
+            for assignment in assignment_group:
+                if assignment.role[0].lower() == "c":
+                    continue
+                help_assignments.append(f"{assignment.role[0].upper()}{assignment.group}")
+            replace_contents(nt, f"fill-{event}-r{round}-assignments", " ".join(help_assignments))
+            # replace_contents(assignment.)
         if "style" in nt.attrs:
             nt.attrs['style'] += f"width: {self.tag_width}cm; height: {self.tag_height}cm;"
         else:

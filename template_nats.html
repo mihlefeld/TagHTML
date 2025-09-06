@@ -93,8 +93,16 @@
             max-height: 1.1cm;
             box-shadow: 0 0 0.1cm 0.05cm rgba(255, 255, 255, 0.7);
         }
+        .small-flag img {
+            max-width: 0.4cm;
+            max-height: 0.25cm;
+            box-shadow: 0 0 0.05cm 0.025cm rgba(255, 255, 255, 0.7);
+        }
         #back-tag {
             border: 1px solid black;
+            display: flex;
+            flex-direction: row;
+            padding: 0;
         }
         #front-tag {
             border: 1px solid black;
@@ -106,6 +114,57 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+        .event-box {
+            flex-direction: column; 
+            display: flex; 
+            border: 0.02cm solid black; 
+            height: 100%; 
+            border-radius: 0.1cm; 
+            padding: 0.05cm; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 0.15cm;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .assignment {
+            display: flex; flex-direction: row; text-align: center; justify-content: center; align-items: center; gap: 0.1cm;
+        }
+        .fill-event-image {
+            height: 0.5cm;
+        }
+        .assignment > img {
+            height: 0.4cm;
+        }
+        .assignment > span {
+            font-size: 0.4cm;
+        }
+        .events-overview {
+            background-color: rgb(97, 152, 255); 
+            width: 6cm; 
+            height: 100%; 
+            display: grid; 
+            grid-template-rows: 1.225cm 1.225cm 1.225cm 1.225cm 1.225cm;
+            grid-template-columns: 1.07cm 1.07cm 1.07cm 1.07cm 1.07cm;
+            padding: 0.2cm; 
+            border-radius: 0.2cm 0.0cm 0.0cm 0.2cm; 
+            box-sizing: border-box;
+            gap: 0.05cm;
+            justify-content: center;
+            align-items: center;
+        }
+        .center-flex-col {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .center-flex-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
         }
     </style>
 </head>
@@ -130,7 +189,7 @@
     </div>
     
     <div id="back-tag" class="tag left-border top-border replace-class-competition-role">
-        <div class="rotated-text">
+        <!-- <div class="rotated-text">
             <table style="height: 4cm; font-size: 0.2cm;">
                 <tr>
                     <th>Event</th>
@@ -149,6 +208,160 @@
             </table>
             <div class="assignments" style="width: 2cm;">
                 <img src="graphics/qrcode.png" class="qr_code" style="height: 1.4cm;">
+            </div>
+        </div> -->
+        <div class="events-overview" >
+            <div class="event-box">
+                <span class="fill-333-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/333.svg">
+                    <span class="fill-333-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-333-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-222-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/222.svg">
+                    <span class="fill-222-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-222-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-444-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/444.svg">
+                    <span class="fill-444-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-444-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-555-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/555.svg">
+                    <span class="fill-555-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-555-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-666-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/666.svg">
+                    <span class="fill-666-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-666-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-777-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/777.svg">
+                    <span class="fill-777-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-777-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-333bf-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/333bf.svg">
+                    <span class="fill-333bf-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-333bf-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-333fm-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/333fm.svg">
+                    <span class="fill-333fm-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-333fm-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-333oh-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/333oh.svg">
+                    <span class="fill-333oh-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-333oh-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-clock-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/clock.svg">
+                    <span class="fill-clock-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-clock-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-minx-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/minx.svg">
+                    <span class="fill-minx-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-minx-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-pyram-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/pyram.svg">
+                    <span class="fill-pyram-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-pyram-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-skewb-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/skewb.svg">
+                    <span class="fill-skewb-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-skewb-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-sq1-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/sq1.svg">
+                    <span class="fill-sq1-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-sq1-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-444bf-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/444bf.svg">
+                    <span class="fill-444bf-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-444bf-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-555bf-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/555bf.svg">
+                    <span class="fill-555bf-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-555bf-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box">
+                <span class="fill-333mbf-r1-time">Sa, 9:30</span> 
+                <div class="assignment">
+                    <img src="graphics/svgs/333mbf.svg">
+                    <span class="fill-333mbf-r1-c-assignment">2</span>
+                </div>
+                <span class="fill-333mbf-r1-assignments">J1 S3</span>
+            </div>
+            <div class="event-box" style="grid-column: auto / span 3; border: 0.02cm solid black; border-radius: 0.1cm; box-sizing: border-box; padding: 0.05cm; gap: 0.05cm">
+                <span class="fill-person-name-direct" style="text-align: center;">Harald Lorenzen Mastoff-Steinschmidt</span>
+                <span class="center-flex-row" style="gap: 0.05cm;">ID: <span class="fill-c-id">51</span> <span class="fill-country-flag small-flag"><img src="graphics/flags/in.png"></span></span>
+            </div>
+        </div>
+        <div class="person-details" style="background-color: rgb(255, 97, 97); width: 2.5cm; height: 100%; font-size: 0.15cm; padding: 0.2cm; box-sizing: border-box; border-radius: 0 0.2cm 0.2cm 0; display: flex; flex-direction: column; align-items: center; justify-content: top; gap: 0.05cm; ">
+            <div class="event-box" style="height: 1.225cm; width: 100%; gap: 0.1cm;">
+                <span class="fill-person-name-direct" style="text-align: center;">Harald Lorenzen Mastoff-Steinschmidt</span>
+                <span class="center-flex-row" style="gap: 0.05cm;">ID: <span class="fill-c-id">51</span> <span class="fill-country-flag small-flag"><img src="graphics/flags/in.png"></span></span>
+            </div>
+            <img src="graphics/qrcode_white.png" style="width: 100%; ">
+            <div style="color: white; font-size: 0.3cm;">
+                J: Judge<br>
+                C: Competitor<br>
+                R: Runner
             </div>
         </div>
     </div>

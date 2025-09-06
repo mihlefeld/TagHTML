@@ -35,6 +35,8 @@ class Assignment:
     group: int
     role: str
     start_end_time: str
+    start_time: datetime.datetime
+    end_time: datetime.datetime
 
 
 @dataclass
@@ -89,13 +91,15 @@ class CompetitorData:
                     for activity in room["activities"]:
                         for child_activity in activity['childActivities']:                      
                             event, round_, group = child_activity['activityCode'].split('-')[:3]
-                            start_time = datetime.datetime.strptime(activity["startTime"], "%Y-%m-%dT%H:%M:%SZ").strftime("%H:%M")
-                            end_time = datetime.datetime.strptime(activity["endTime"], "%Y-%m-%dT%H:%M:%SZ").strftime("%H:%M")
+                            start_time = datetime.datetime.strptime(activity["startTime"], "%Y-%m-%dT%H:%M:%SZ")
+                            end_time = datetime.datetime.strptime(activity["endTime"], "%Y-%m-%dT%H:%M:%SZ")
                             activities[child_activity['id']] = {
                                 'event': event,
                                 'round': int(round_[1:]),
                                 'group': int(group[1:]),
-                                'start_end_time': f"{start_time} - {end_time}",
+                                'start_end_time': f"{start_time.strftime("%H:%M")} - {end_time.strftime("%H:%M")}",
+                                'start_time': start_time,
+                                'end_time': end_time,
                             }
         competitor_assignments = {}
         for person in comp_data['persons']:
@@ -105,7 +109,7 @@ class CompetitorData:
                 try:
                     activity = activities[activity_id]
                     role = assignment['assignmentCode']
-                    person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role, activity['start_end_time']))
+                    person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role, activity['start_end_time'], activity['start_time'], activity['end_time']))
                 except KeyError as e:
                     warnings.warn("Assignments other than competitor/judge/scrambler are not yet supported")
             competitor_assignments[person['registrantId']] = person_assignments

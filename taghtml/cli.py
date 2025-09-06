@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from typing import Annotated
 
-app = typer.Typer(add_completion=False, no_args_is_help=True)
+app = typer.Typer(add_completion=False, no_args_is_help=True, pretty_exceptions_show_locals=False)
 
 @app.command()
 def main(
