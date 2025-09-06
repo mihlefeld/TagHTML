@@ -125,7 +125,8 @@ class BS4Renderer:
             for x in tg.find_all(class_=cls):
                 x: Tag
                 x.clear()
-                x.append(copy.copy(content))
+                for tag in content:
+                    x.append(copy.copy(tag))
 
         def replace_class(tg: Tag, cls, replacement):
             if cls in tg["class"]:
@@ -135,7 +136,7 @@ class BS4Renderer:
                 x["class"] = [class_name for class_name in x["class"] + replacement if class_name != cls]
         
         replace_contents(nt, "fill-comp-name", self.comp_name)
-        replace_children(nt, "fill-person-name", prepare_name(competitor.name))
+        replace_children(nt, "fill-person-name", [prepare_name(competitor.name)])
         replace_contents(nt, "fill-person-name-direct", competitor.name)
         replace_contents(nt, "fill-wca-id", competitor.wca_id)
         replace_contents(nt, "fill-c-id", competitor.idx if competitor.idx is not None else "")
@@ -145,7 +146,7 @@ class BS4Renderer:
         replace_contents(nt, "fill-experience-emoji", self.competition_count_to_emoji(competitor.num_competitions))
         replace_contents(nt, "fill-cid-modulo-emoji", self.cid_modulo_emoji[competitor.idx % len(self.cid_modulo_emoji)] if competitor.idx is not None else "")
         replace_contents(nt, "fill-people-emoji", self.people_emoji.get(competitor.wca_id, ""))
-        replace_children(nt, "fill-country-flag", Tag(name="img", attrs={"src": f"graphics/flags/{competitor.iso2.lower()}.png"}))
+        replace_children(nt, "fill-country-flag", [Tag(name="img", attrs={"src": f"graphics/flags/{competitor.iso2.lower()}.png"})])
         replace_class(nt, "replace-class-competition-role", competitor.roles)
         grouped_assignments: dict[(str, str), list[Assignment]] = defaultdict(list)
         for event in events:
@@ -164,16 +165,20 @@ class BS4Renderer:
             for assignment in assignment_group:
                 if assignment.role[0].lower() == "c":
                     replace_contents(nt, f"fill-{event}-r{round}-c-assignment", assignment.group)
+                    replace_class(nt, f"replace-class-{event}-r{round}-c-assignment-room", [assignment.room_name])
             assignment = assignment_group[0]
             replace_contents(nt, f"fill-{event}-r{round}-time", assignment.start_time.strftime("%a %H:%M"))
             help_assignments = []
             for assignment in assignment_group:
                 if assignment.role[0].lower() == "c":
                     continue
-                help_assignments.append(f"{assignment.role[0].upper()}{assignment.group}")
-            help_assignments = " ".join(help_assignments) if help_assignments else "-"
-            replace_contents(nt, f"fill-{event}-r{round}-assignments", help_assignments)
-            replace_class(nt, f"replace-class-{event}-r1-active", ["event-active"])
+                tg = Tag(name="span", attrs={"class": assignment.room_name})
+                tg.append(NavigableString(f"{assignment.role[0].upper()}{assignment.group} "))
+                help_assignments.append(tg)
+            if not help_assignments:
+                help_assignments.append(NavigableString("-"))
+            replace_children(nt, f"fill-{event}-r{round}-assignments", help_assignments)
+            replace_class(nt, f"replace-class-{event}-r{round}-active", ["event-active"])
             # replace_contents(assignment.)
         for event in active_events:
             replace_class(nt, f"replace-class-{event}-r1-active", ["event-active"])

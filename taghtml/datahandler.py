@@ -37,6 +37,7 @@ class Assignment:
     start_end_time: str
     start_time: datetime.datetime
     end_time: datetime.datetime
+    room_name: str
 
 
 @dataclass
@@ -104,6 +105,7 @@ class CompetitorData:
                                 'start_end_time': f"{start_time.strftime("%H:%M")} - {end_time.strftime("%H:%M")}",
                                 'start_time': start_time,
                                 'end_time': end_time,
+                                'room_name': room['name'].lower().replace(' ', '-')
                             }
                             self.event_times[(event, int(round_[1:]))] = (start_time, end_time)
         competitor_assignments = {}
@@ -121,7 +123,7 @@ class CompetitorData:
                     if role not in ["competitor", "runner", "judge", "scrambler", "delegate", "lead"]:
                         continue
 
-                    person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role.replace("staff-", ""), activity['start_end_time'], activity['start_time'], activity['end_time']))
+                    person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role.replace("staff-", ""), activity['start_end_time'], activity['start_time'], activity['end_time'], activity['room_name']))
                 except KeyError as e:
                     warnings.warn(f"Assignments other than competitor/judge/scrambler are not yet supported {assignment}")
             competitor_assignments[person['registrantId']] = person_assignments
