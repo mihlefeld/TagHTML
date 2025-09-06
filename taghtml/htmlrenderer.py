@@ -2,6 +2,7 @@ import pathlib
 import math
 import copy
 import json
+import datetime
 from pathlib import Path
 from rich.progress import Progress
 from collections import defaultdict
@@ -87,9 +88,9 @@ class BS4Renderer:
             back_page = Tag(name="div", attrs={'class': 'page', "style": f"width: {self.page_width}cm; height: {self.page_height}cm; flex-direction: row-reverse;"})
             for i, row in enumerate(page):
                 for j, competitor in enumerate(row):
-                    item = self.replace_fill_tags(self.front_tag_template, competitor, i==0, j==0)
+                    item = self.replace_fill_tags(self.front_tag_template, competitor, competitors.event_times)
                     front_page.append(item)
-                    item = self.replace_fill_tags(self.back_tag_template, competitor, i==0, j==0)
+                    item = self.replace_fill_tags(self.back_tag_template, competitor, competitors.event_times)
                     back_page.append(item)
 
             # insert spacer nametags to facilitate correct matching for two-sided printing
@@ -112,7 +113,8 @@ class BS4Renderer:
                 emoji = v
         return emoji
 
-    def replace_fill_tags(self, name_tag: Tag, competitor: Competitor, top_border: bool, left_border: bool):
+    def replace_fill_tags(self, name_tag: Tag, competitor: Competitor, event_times: dict[(str, int), (datetime.datetime, datetime.datetime)]):
+        events = ["333","222","444","555","666","777","333bf","333fm","333oh","clock","minx","pyram","skewb","sq1","444bf","555bf","333mbf"]
         # front-tag
         nt = copy.copy(name_tag)
         def replace_contents(tg, cls, content):
@@ -146,9 +148,19 @@ class BS4Renderer:
         replace_children(nt, "fill-country-flag", Tag(name="img", attrs={"src": f"graphics/flags/{competitor.iso2.lower()}.png"}))
         replace_class(nt, "replace-class-competition-role", competitor.roles)
         grouped_assignments: dict[(str, str), list[Assignment]] = defaultdict(list)
+        for event in events:
+            start, end = "", ""
+            if (event, 1) in event_times:
+                start_, end_ = event_times[(event, 1)]
+                start = start_.strftime("%a %H:%M")
+            replace_contents(nt, f"fill-{event}-r1-time", start)
+            replace_contents(nt, f"fill-{event}-r1-c-assignment", "-")
+            replace_contents(nt, f"fill-{event}-r1-assignments", "-")
         for assignment in competitor.assignments:
             grouped_assignments[(assignment.event, assignment.round)].append(assignment)
+        active_events = []
         for (event, round), assignment_group in grouped_assignments.items():
+            active_events.append(event)
             for assignment in assignment_group:
                 if assignment.role[0].lower() == "c":
                     replace_contents(nt, f"fill-{event}-r{round}-c-assignment", assignment.group)
@@ -159,8 +171,14 @@ class BS4Renderer:
                 if assignment.role[0].lower() == "c":
                     continue
                 help_assignments.append(f"{assignment.role[0].upper()}{assignment.group}")
-            replace_contents(nt, f"fill-{event}-r{round}-assignments", " ".join(help_assignments))
+            help_assignments = " ".join(help_assignments) if help_assignments else "-"
+            replace_contents(nt, f"fill-{event}-r{round}-assignments", help_assignments)
+            replace_class(nt, f"replace-class-{event}-r1-active", ["event-active"])
             # replace_contents(assignment.)
+        for event in active_events:
+            replace_class(nt, f"replace-class-{event}-r1-active", ["event-active"])
+        for event in set(events).difference(active_events):
+            replace_class(nt, f"replace-class-{event}-r1-active", ["event-inactive"])
         if "style" in nt.attrs:
             nt.attrs['style'] += f"width: {self.tag_width}cm; height: {self.tag_height}cm;"
         else:
@@ -174,7 +192,7 @@ class BS4Renderer:
             for assignment in competitor.assignments:
                 if assignment.round == 1:
                     grouped_assignments[assignment.event][assignment.role].append(str(assignment.group))
-            event_key = ["333","222","444","555","666","777","333bf","333fm","333oh","clock","minx","pyram","skewb","sq1","444bf","555bf","333mbf"]
+            event_key = events
             event_key = {x: i for i, x in enumerate(event_key)}
             grouped_assignments_sorted = sorted(grouped_assignments.items(), key=lambda x: event_key[x[0]])
             for event, eventd in grouped_assignments_sorted:

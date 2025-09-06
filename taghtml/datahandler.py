@@ -56,6 +56,7 @@ class CompetitorData:
         self.competitor_assignments = None
         self.comp_id = comp_id
         self.comp_name = None
+        self.event_times: dict[(str, int), (datetime.datetime, datetime.datetime)] = {}
         self.prepare_data()
         self.index = 0
 
@@ -89,7 +90,10 @@ class CompetitorData:
         for venue in comp_data['schedule']['venues']:
             	for room in venue['rooms']:
                     for activity in room["activities"]:
-                        for child_activity in activity['childActivities']:                      
+                        child_activities = activity['childActivities']
+                        if 'other' not in activity['activityCode'] and not child_activities:
+                            child_activities = [activity]
+                        for child_activity in child_activities:
                             event, round_, group = child_activity['activityCode'].split('-')[:3]
                             start_time = datetime.datetime.strptime(activity["startTime"], "%Y-%m-%dT%H:%M:%SZ")
                             end_time = datetime.datetime.strptime(activity["endTime"], "%Y-%m-%dT%H:%M:%SZ")
@@ -101,6 +105,7 @@ class CompetitorData:
                                 'start_time': start_time,
                                 'end_time': end_time,
                             }
+                            self.event_times[(event, int(round_[1:]))] = (start_time, end_time)
         competitor_assignments = {}
         for person in comp_data['persons']:
             person_assignments = []
@@ -108,10 +113,14 @@ class CompetitorData:
                 activity_id = assignment['activityId']
                 try:
                     activity = activities[activity_id]
+                except KeyError as e:
+                    warnings.warn(f"Tried to access non-existant activity {activity_id}")
+                    continue
+                try:
                     role = assignment['assignmentCode']
                     person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role, activity['start_end_time'], activity['start_time'], activity['end_time']))
                 except KeyError as e:
-                    warnings.warn("Assignments other than competitor/judge/scrambler are not yet supported")
+                    warnings.warn(f"Assignments other than competitor/judge/scrambler are not yet supported {assignment}")
             competitor_assignments[person['registrantId']] = person_assignments
         self.competitor_assignments = competitor_assignments
         self.comp_name = comp_data['shortName']
