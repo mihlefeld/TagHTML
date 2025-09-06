@@ -13,9 +13,9 @@ def main(
         width: Annotated[float, typer.Option("--width", "-w", help="Width of each nametag in cm.")] = 9.0, 
         update: Annotated[bool, typer.Option(help="Set this flag to update the database before generating the nametags.")] = False, 
         template_path: Annotated[Path, typer.Option(help="Path to the html template file.")] = Path("template.html"), 
-        experience_emoji_path: Annotated[Path, typer.Option("--experience-emoji-path", "--emp", help="Path to the json file mapping a number of competitions to an emoji.")] = "experience_emoji.json", 
-        people_emoji_path: Annotated[Path, typer.Option("--people-emoji-path", "--emp", help="Path to the json file mapping a number of competitions to an emoji.")] = "people_emoji.json", 
-        cid_modulo_emoji_path: Annotated[Path, typer.Option("--cid-modulo-emoji-path", "--emp", help="Path to the json file mapping a number of competitions to an emoji.")] = "cid_modulo_emoji.json", 
+        experience_emoji_path: Annotated[Path, typer.Option("--experience-emoji-path", "--eep", help="Path to the json file mapping a number of competitions to an emoji.")] = "experience_emoji.json", 
+        people_emoji_path: Annotated[Path, typer.Option("--people-emoji-path", "--pep", help="Path to the json file mapping a number of competitions to an emoji.")] = "people_emoji.json", 
+        cid_modulo_emoji_path: Annotated[Path, typer.Option("--cid-modulo-emoji-path", "--cep", help="Path to the json file mapping a number of competitions to an emoji.")] = "cid_modulo_emoji.json", 
         format: Annotated[str, typer.Option(help="Page format to use for printing")] = "A4",
         
     ):    
