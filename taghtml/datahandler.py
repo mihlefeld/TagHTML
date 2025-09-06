@@ -114,11 +114,14 @@ class CompetitorData:
                 try:
                     activity = activities[activity_id]
                 except KeyError as e:
-                    warnings.warn(f"Tried to access non-existant activity {activity_id}")
+                    # warnings.warn(f"Tried to access non-existant activity {activity_id}")
                     continue
                 try:
-                    role = assignment['assignmentCode']
-                    person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role, activity['start_end_time'], activity['start_time'], activity['end_time']))
+                    role = assignment['assignmentCode'].replace("staff-", "").replace("stagelead", "lead")
+                    if role not in ["competitor", "runner", "judge", "scrambler", "delegate", "lead"]:
+                        continue
+
+                    person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role.replace("staff-", ""), activity['start_end_time'], activity['start_time'], activity['end_time']))
                 except KeyError as e:
                     warnings.warn(f"Assignments other than competitor/judge/scrambler are not yet supported {assignment}")
             competitor_assignments[person['registrantId']] = person_assignments
