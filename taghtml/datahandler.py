@@ -95,7 +95,10 @@ class CompetitorData:
                         if 'other' not in activity['activityCode'] and not child_activities:
                             child_activities = [activity]
                         for child_activity in child_activities:
-                            event, round_, group = child_activity['activityCode'].split('-')[:3]
+                            try:
+                                event, round_, group = child_activity['activityCode'].split('-')[:3]
+                            except:
+                                continue
                             start_time = datetime.datetime.strptime(activity["startTime"], "%Y-%m-%dT%H:%M:%SZ")
                             end_time = datetime.datetime.strptime(activity["endTime"], "%Y-%m-%dT%H:%M:%SZ")
                             activities[child_activity['id']] = {
