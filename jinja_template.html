@@ -8,27 +8,23 @@
 <body style="margin: 0;">
     {% for page in pages %}
     <div class="page">
-        {% for row in page %}
-        {% for competitor in row %}
+        {% for competitor in page %}
         <div class="tag front-tag competitor {{ competitor.role }}" style="display: unset; position: relative">
             <div class="ft-details">
                     <div class="name-emoji">
                         <span class="ft-name">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
                         <span class="ft-emoji">{{ competitor.exp_emoji }} {{ competitor.cid_emoji }} {{ competitor.pep_emoji }}</span>
                     </div>
-                    <div class="fill-country-flag flag"><img src="graphics/flags/{{ competitor.iso2 }}.png"></div>
+                    <img class="flag" src="graphics/flags/{{ competitor.iso2 }}.png">
             </div>
         </div>
         {% endfor %}
-        {% endfor %}
     </div>
     <div class="page" style="flex-direction: row-reverse;">
-        {% for row in page %}
-        {% for competitor in row %}
+        {% for competitor in page %}
         <div class="tag competitor {{ competitor.role }} back-tag">
             <div class="events-overview" >
-                {% for (event, round), (start, end) in event_times.items() %}
-                {% if round == 1 %}
+                {% for event, (start, end) in event_r1_times.items() %}
                 <div class="event-box event-{{ event }} {% if event not in competitor.event_assignments %} event-inactive {% endif %}">
                     <span> {{ start.strftime('%a %H:%M') }}</span> 
                     <div class="assignment">
@@ -43,14 +39,13 @@
                     </span>
                     {% endfor %}
                 </div>
-                {% endif %}
                 {% endfor %}
             </div>
             <div class="person-details">
                 <div class="event-box" style="width: 100%; border: 0.02cm solid black; border-radius: 0.1cm; box-sizing: border-box; padding: 0.05cm; gap: 0.15cm">
                     <span class="fill-person-name" style="text-align: center; font-size: 0.2cm; font-weight: bold;">{{ competitor.name }}</span>
-                    <span class="center-flex-row" style="gap: 0.05cm;"><span class="fill-country-flag small-flag"><img src="graphics/flags/{{ competitor.iso2 }}.png"></span></span>
-                    <span>#<span class="fill-c-id">15</span></span>
+                    <img  class="small-flag" src="graphics/flags/{{ competitor.iso2 }}.png">
+                    <span># {{ competitor.id }}</span>
                 </div>
                 <img src="graphics/qrcode_white.png" style="width: 100%; ">
                 <div style="font-size: 0.25cm; flex-wrap: wrap; gap: 0.05cm; display: grid; grid-template-columns: 1fr 2fr 6fr;">
@@ -61,181 +56,8 @@
             </div>
         </div>
         {% endfor %}
-        {% endfor %}
     </div>
     {% endfor %}
-    <!-- <div id="page-example" class="page">
-        
-        <div id="front-tag" class="tag left-border top-border competitor replace-class-competition-role" style="display: unset; position: relative;">
-            <span class="fill-c-id" style="position: absolute; color: white; font-size: xx-small;">15</span>
-            <div class="fp-name">
-                <div class="front-tag-name-flag">
-                    <div class="bg-fade">
-                        <span class="fill-person-name" style="font-size: larger; font-weight: 800; text-align: center;">Harald Lorenzen Mastoff-Steinschmidt</span>
-                        <div style="align-items: center; display: flex; justify-content: center; gap: 0.1cm;">
-                            <span style="font-size: medium;"><span class="emoji fill-experience-emoji">🦉</span>
-                            <span style="font-size: medium;"><span class="emoji fill-cid-modulo-emoji">🍉</span>
-                            <span style="font-size: medium;"><span class="emoji fill-people-emoji">🥇</span>
-                        </div>
-                    </div>
-                <div class="fill-country-flag flag"><img src="graphics/flags/in.png"></div>
-            </div>
-        </div>
-    </div>
-    
-    <div id="back-tag" class="tag left-border top-border replace-class-competition-role">
-        <div class="events-overview" >
-            <div class="event-box replace-class-333-r1-active" style="grid-column: auto / span 3;">
-                <span class="fill-333-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/333.svg">
-                    <span class="fill-333-r1-c-assignment replace-class-333-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-333-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-222-r1-active" style="grid-column: auto / span 2">
-                <span class="fill-222-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/222.svg">
-                    <span class="fill-222-r1-c-assignment replace-class-222-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-222-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-444-r1-active">
-                <span class="fill-444-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/444.svg">
-                    <span class="fill-444-r1-c-assignment replace-class-444-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-444-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-555-r1-active">
-                <span class="fill-555-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/555.svg">
-                    <span class="fill-555-r1-c-assignment replace-class-555-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-555-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-666-r1-active">
-                <span class="fill-666-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/666.svg">
-                    <span class="fill-666-r1-c-assignment replace-class-666-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-666-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-777-r1-active">
-                <span class="fill-777-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/777.svg">
-                    <span class="fill-777-r1-c-assignment replace-class-777-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-777-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-333bf-r1-active">
-                <span class="fill-333bf-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/333bf.svg">
-                    <span class="fill-333bf-r1-c-assignment replace-class-333bf-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-333bf-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-333fm-r1-active">
-                <span class="fill-333fm-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/333fm.svg">
-                    <span class="fill-333fm-r1-c-assignment replace-class-333fm-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-333fm-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-333oh-r1-active">
-                <span class="fill-333oh-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/333oh.svg">
-                    <span class="fill-333oh-r1-c-assignment replace-class-333oh-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-333oh-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-clock-r1-active">
-                <span class="fill-clock-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/clock.svg">
-                    <span class="fill-clock-r1-c-assignment replace-class-clock-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-clock-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-minx-r1-active">
-                <span class="fill-minx-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/minx.svg">
-                    <span class="fill-minx-r1-c-assignment replace-class-minx-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-minx-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-pyram-r1-active">
-                <span class="fill-pyram-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/pyram.svg">
-                    <span class="fill-pyram-r1-c-assignment replace-class-pyram-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-pyram-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-skewb-r1-active">
-                <span class="fill-skewb-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/skewb.svg">
-                    <span class="fill-skewb-r1-c-assignment replace-class-skewb-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-skewb-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-sq1-r1-active">
-                <span class="fill-sq1-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/sq1.svg">
-                    <span class="fill-sq1-r1-c-assignment replace-class-sq1-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-sq1-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-444bf-r1-active">
-                <span class="fill-444bf-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/444bf.svg">
-                    <span class="fill-444bf-r1-c-assignment replace-class-444bf-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-444bf-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-555bf-r1-active">
-                <span class="fill-555bf-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/555bf.svg">
-                    <span class="fill-555bf-r1-c-assignment replace-class-555bf-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-555bf-r1-assignments">J1 S3</span>
-            </div>
-            <div class="event-box replace-class-333mbf-r1-active">
-                <span class="fill-333mbf-r1-time">Sa, 9:30</span> 
-                <div class="assignment">
-                    <img src="graphics/svgs/333mbf.svg">
-                    <span class="fill-333mbf-r1-c-assignment replace-class-333mbf-r1-c-assignment-room">2</span>
-                </div>
-                <span class="fill-333mbf-r1-assignments">J1 S3</span>
-            </div>
-        </div>
-        <div class="person-details">
-                <div class="event-box" style="width: 100%; border: 0.02cm solid black; border-radius: 0.1cm; box-sizing: border-box; padding: 0.05cm; gap: 0.15cm">
-                <span class="fill-person-name" style="text-align: center; font-size: 0.2cm; font-weight: bold;">Harald Lorenzen Mastoff-Steinschmidt</span>
-                <span class="center-flex-row" style="gap: 0.05cm;"><span class="fill-country-flag small-flag"><img src="graphics/flags/in.png"></span></span>
-                <span>#<span class="fill-c-id">15</span></span>
-            </div>
-            <img src="graphics/qrcode_white.png" style="width: 100%; ">
-            <div style="font-size: 0.25cm; flex-wrap: wrap; gap: 0.05cm; display: grid; grid-template-columns: 1fr 2fr 6fr;">
-                <span>J</span><span>:</span> <span style="text-align: end;">Judge</span>
-                <span>R</span><span>:</span> <span style="text-align: end;">Runner</span>
-                <span>S</span><span>:</span> <span style="text-align: end;">Scrambler</span>
-            </div>
-        </div>
-    </div> -->
 </div>
 </body>
 </html>

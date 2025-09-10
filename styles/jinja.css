@@ -105,12 +105,12 @@ tr:nth-child(even) {
 .ft-emoji {
     font-size: larger;
 }
-.flag img {
+.flag {
     max-width: 1.5cm;
     max-height: 1.1cm;
     box-shadow: 0 0 0.1cm 0.05cm rgba(255, 255, 255, 0.7);
 }
-.small-flag img {
+.small-flag {
     max-width: 0.4cm;
     max-height: 0.25cm;
     box-shadow: 0 0 0.05cm 0.025cm rgba(255, 255, 255, 0.7);

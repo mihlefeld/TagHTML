@@ -86,7 +86,7 @@ class JinjaRenderer:
             "cid_emoji": cid_emoji,
             "pep_emoji": self.people_emoji.get(competitor.wca_id, ""),
             "exp_emoji": self.competition_count_to_emoji(competitor.num_competitions),
-            "idx": competitor.idx,
+            "id": competitor.idx,
             "country": competitor.country,
             "num_competitions": competitor.num_competitions,
             "roles": competitor.roles
@@ -94,29 +94,28 @@ class JinjaRenderer:
 
     def render(self, competitors: CompetitorData, out_path, progress: Progress):
         self.comp_name = competitors.comp_name
-        pages: List[List[Competitor]] = []
-        current_row = []
+        pages: list[list[dict]] = []
         current_page = []
         for i, competitor in enumerate(competitors):
-            if i % self.columns == 0 or i == len(competitors) - 1:
-                if len(current_row) != 0:
-                    current_page.append(current_row)
-                current_row = []
-            if i % self.per_page == 0 or i == len(competitors) - 1: 
+            if i % self.per_page == 0: 
                 if len(current_page) != 0:
                     pages.append(current_page)
                 current_page = []
-            current_row.append(self.get_render_dict(competitor))
-        if len(current_row) != 0:
-            current_page.append(current_row)
+            current_page.append(self.get_render_dict(competitor))
+        if len(current_page) != 0:
+            while len(current_page) != self.per_page:
+                current_page.append(self.get_render_dict(Competitor(-1, "2042DUMM00", "No Name", "Germany", "de", 0, [], [])))
             pages.append(current_page)
+        
+        
         
         events = ["333","222","444","555","666","777","333bf","333fm","333oh","clock","minx","pyram","skewb","sq1","444bf","555bf","333mbf"]
         event_index = {event: i for i, event in enumerate(events)}
         event_times = OrderedDict(sorted(competitors.event_times.items(), key=lambda x: (event_index[x[0][0]], x[0][1])))
+        event_r1_times = OrderedDict(sorted([(event, t) for (event, round), t in competitors.event_times.items() if round == 1], key=lambda x: event_index[x[0]]))
         
         template = self.jinja.get_template(self.template_path.name)
-        rendered = template.render(pages=pages, wca_events=events, event_times=event_times)
+        rendered = template.render(pages=pages, wca_events=events, event_times=event_times, event_r1_times=event_r1_times)
         with open(out_path, "w", encoding="utf8") as file:
             file.write(rendered)
             
