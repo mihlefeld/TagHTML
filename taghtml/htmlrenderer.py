@@ -47,6 +47,7 @@ class BS4Renderer:
         self.columns = int(math.floor(self.page_width / width))
         self.rows = int(math.floor(self.page_height / height))
         self.per_page = self.columns * self.rows
+        self.valid_replace_tags = defaultdict(lambda: defaultdict(bool))
         with open(template_path, encoding="utf-8") as file:
             markup = file.read()
         self.bs = BeautifulSoup(markup, features="html.parser")
@@ -88,9 +89,9 @@ class BS4Renderer:
             back_page = Tag(name="div", attrs={'class': 'page', "style": f"width: {self.page_width}cm; height: {self.page_height}cm; flex-direction: row-reverse;"})
             for i, row in enumerate(page):
                 for j, competitor in enumerate(row):
-                    item = self.replace_fill_tags(self.front_tag_template, competitor, competitors.event_times)
+                    item = self.replace_fill_tags(self.front_tag_template, competitor, competitors.event_times, "front")
                     front_page.append(item)
-                    item = self.replace_fill_tags(self.back_tag_template, competitor, competitors.event_times)
+                    item = self.replace_fill_tags(self.back_tag_template, competitor, competitors.event_times, "back")
                     back_page.append(item)
 
             # insert spacer nametags to facilitate correct matching for two-sided printing
@@ -113,16 +114,33 @@ class BS4Renderer:
                 emoji = v
         return emoji
 
-    def replace_fill_tags(self, name_tag: Tag, competitor: Competitor, event_times: dict[(str, int), (datetime.datetime, datetime.datetime)]):
+    def replace_fill_tags(self, name_tag: Tag, competitor: Competitor, event_times: dict[(str, int), (datetime.datetime, datetime.datetime)], template_name):
+        valid_replace_tags = self.valid_replace_tags[template_name]
         events = ["333","222","444","555","666","777","333bf","333fm","333oh","clock","minx","pyram","skewb","sq1","444bf","555bf","333mbf"]
         # front-tag
         nt = copy.copy(name_tag)
+        def check_cls_valid(cls):
+            if cls not in valid_replace_tags:
+                valid_replace_tags[cls] = False
+                return True
+            if not valid_replace_tags[cls]:
+                return False
+            return True
+
         def replace_contents(tg, cls, content):
-            for x in tg.find_all(class_=cls):
+            if not check_cls_valid(cls):
+                return
+            tags = tg.find_all(class_=cls)
+            valid_replace_tags[cls] = bool(tags)
+            for x in tags:
                 x.string = NavigableString(str(content))
         
         def replace_children(tg, cls, content):
-            for x in tg.find_all(class_=cls):
+            if not check_cls_valid(cls):
+                return
+            tags = tg.find_all(class_=cls)
+            valid_replace_tags[cls] = bool(tags)
+            for x in tags:
                 x: Tag
                 x.clear()
                 for tag in content:
@@ -131,7 +149,11 @@ class BS4Renderer:
         def replace_class(tg: Tag, cls, replacement):
             if cls in tg["class"]:
                 tg["class"] = [class_name for class_name in tg["class"] + replacement if class_name != cls]
-            for x in tg.find_all(class_=cls):
+            if not check_cls_valid(cls):
+                return
+            tags = tg.find_all(class_=cls)
+            valid_replace_tags[cls] = bool(tags)
+            for x in tags:
                 x: Tag
                 x["class"] = [class_name for class_name in x["class"] + replacement if class_name != cls]
         
