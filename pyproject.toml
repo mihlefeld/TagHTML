@@ -13,7 +13,8 @@ dependencies = [
     "polars",
     "requests",
     "typer",
-    "beautifulsoup4"
+    "beautifulsoup4",
+    "fastapi"
 ]
 
 [project.scripts]

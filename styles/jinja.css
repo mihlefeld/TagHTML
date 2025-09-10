@@ -1,6 +1,5 @@
 html {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    --border-style: none;
     margin: 0;
 }
 body {
@@ -21,19 +20,14 @@ body {
     box-sizing: border-box; /* don't change otherwise height and width are wrong */
     width: 8.5cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
     height: 5.5cm;
-}
-.top-border {
-    border-top: var(--border-style);
-}
-.left-border {
-    border-left: var(--border-style);
+    border: 0.1cm solid black;
 }
 .page {
     justify-content: center;
     align-content: center;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.05cm;
+    /*gap: 0.05cm;*/
     width: 21cm;
     height: 29.7cm;
 }
@@ -62,17 +56,20 @@ tr:nth-child(even) {
 .front-tag.competitor {
     background-image: url('../graphics/competitor_base.png');
     background-position: center;
-    background-size: contain;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 .front-tag.organizer {
     background-image: url('../graphics/competitor_base.png');
+    background-repeat: no-repeat;
     background-position: center;
-    background-size: contain;
+    background-size: cover;
 }
 .front-tag.delegate {
     background-image: url('../graphics/competitor_base.png');
+    background-repeat: no-repeat;
     background-position: center;
-    background-size: contain;
+    background-size: cover;
 }
 .ft-details {
     position: absolute;   
@@ -117,14 +114,13 @@ tr:nth-child(even) {
 }
 .back-tag {
     background: linear-gradient(33deg, rgba(0, 0, 0, 1) 0%, rgba(221, 0, 0, 1) 100%);
-    border: 1px solid black;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
     color: white;
     display: flex;
     flex-direction: row;
     padding: 0;
-}
-.front-tag {
-    border: 1px solid black;
 }
 .rotated-text {
     writing-mode: vertical-rl;

@@ -17,6 +17,7 @@ def main(
         people_emoji_path: Annotated[Path, typer.Option("--people-emoji-path", "--pep", help="Path to the json file mapping a number of competitions to an emoji.")] = "people_emoji.json", 
         cid_modulo_emoji_path: Annotated[Path, typer.Option("--cid-modulo-emoji-path", "--cep", help="Path to the json file mapping a number of competitions to an emoji.")] = "cid_modulo_emoji.json", 
         format: Annotated[str, typer.Option(help="Page format to use for printing")] = "A4",
+        interactive: Annotated[bool, typer.Option(help="Run an http server that serves and reloads the template everytime it is changed. Canges to the emoji currently need a restart.")] = True
     ):    
     from taghtml.datahandler import update_data, CompetitorData
     from taghtml.jinjarenderer import JinjaRenderer
@@ -30,8 +31,21 @@ def main(
         r = JinjaRenderer(width, height, template_path, experience_emoji_path, people_emoji_path, cid_modulo_emoji_path, format)
         os.makedirs(output_path.parent, exist_ok=True)
         rth =  p.add_task("Rendering to HTML.")
-        r.render(comp_data, output_path, p)
+        r.render_file(comp_data, output_path)
         p.update(rth, completed=100)
+    
+    if interactive:
+        import fastapi
+        from fastapi.staticfiles import StaticFiles
+        server = fastapi.FastAPI()
+        @server.get("/render")
+        def render():
+            return fastapi.responses.HTMLResponse(r.render())
+        import uvicorn
+        server.mount("/styles", StaticFiles(directory="styles", html=True), name="styles")
+        server.mount("/graphics", StaticFiles(directory="graphics", html=True), name="graphics")
+        uvicorn.run(server, )
+
 
 if __name__ == "__main__":
     app()

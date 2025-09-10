@@ -40,13 +40,8 @@ class JinjaRenderer:
         self.per_page = self.columns * self.rows
         self.valid_replace_tags = defaultdict(lambda: defaultdict(bool))
         self.template_path = template_path
-        self.jinja = jinja2.Environment(loader=FileSystemLoader(template_path.parent.absolute().as_posix()), autoescape=False)
-        # with open(template_path, encoding="utf-8") as file:
-        #     markup = file.read()
-        # self.bs = BeautifulSoup(markup, features="html.parser")
-        # self.bs.find(name='style').string += "@page {size: " + format + "; margin: 0; }"
-        # self.front_tag_template = self.bs.find(id='front-tag').extract()
-        # self.back_tag_template = self.bs.find(id='back-tag').extract()
+        self.jinja = jinja2.Environment(loader=FileSystemLoader(template_path.parent.absolute().as_posix()), autoescape=False, auto_reload=True)
+        self.events = ["333","222","444","555","666","777","333bf","333fm","333oh","clock","minx","pyram","skewb","sq1","444bf","555bf","333mbf"]
         self.exp_emoji = json.load(open(exp_emoji_path, encoding="UTF-8"))
         self.people_emoji: dict = json.load(open(people_emoji_path, encoding="UTF-8"))
         assert isinstance(self.people_emoji, dict)
@@ -91,8 +86,8 @@ class JinjaRenderer:
             "num_competitions": competitor.num_competitions,
             "roles": competitor.roles
         }
-
-    def render(self, competitors: CompetitorData, out_path, progress: Progress):
+    
+    def setup(self, competitors: CompetitorData):        
         self.comp_name = competitors.comp_name
         pages: list[list[dict]] = []
         current_page = []
@@ -106,16 +101,20 @@ class JinjaRenderer:
             while len(current_page) != self.per_page:
                 current_page.append(self.get_render_dict(Competitor(-1, "2042DUMM00", "No Name", "Germany", "de", 0, [], [])))
             pages.append(current_page)
-        
-        
-        
-        events = ["333","222","444","555","666","777","333bf","333fm","333oh","clock","minx","pyram","skewb","sq1","444bf","555bf","333mbf"]
-        event_index = {event: i for i, event in enumerate(events)}
-        event_times = OrderedDict(sorted(competitors.event_times.items(), key=lambda x: (event_index[x[0][0]], x[0][1])))
-        event_r1_times = OrderedDict(sorted([(event, t) for (event, round), t in competitors.event_times.items() if round == 1], key=lambda x: event_index[x[0]]))
-        
-        template = self.jinja.get_template(self.template_path.name)
-        rendered = template.render(pages=pages, wca_events=events, event_times=event_times, event_r1_times=event_r1_times)
+        self.pages = pages
+                
+        self.event_index = {event: i for i, event in enumerate(self.events)}
+        self.event_times = OrderedDict(sorted(competitors.event_times.items(), key=lambda x: (self.event_index[x[0][0]], x[0][1])))
+        self.event_r1_times = OrderedDict(sorted([(event, t) for (event, round), t in competitors.event_times.items() if round == 1], key=lambda x: self.event_index[x[0]]))
+        self.template = self.jinja.get_template(self.template_path.name)
+
+    def render(self):
+        self.template = self.jinja.get_template(self.template_path.name)
+        return self.template.render(pages=self.pages, wca_events=self.events, event_times=self.event_times, event_r1_times=self.event_r1_times)
+
+    def render_file(self, competitors: CompetitorData, out_path) -> str:
+        self.setup(competitors)
+        rendered = self.render()
         with open(out_path, "w", encoding="utf8") as file:
             file.write(rendered)
             
