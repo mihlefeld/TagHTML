@@ -29,12 +29,10 @@ def main(
         cod = p.add_task("Computing data.")
         comp_data = CompetitorData(comp_id)
         p.update(cod, completed=100)
-        inr = p.add_task("Initializing renderer.")
         if jinja: 
             r = JinjaRenderer(width, height, template_path, experience_emoji_path, people_emoji_path, cid_modulo_emoji_path, format)
         else:
             r = BS4Renderer(width, height, template_path, experience_emoji_path, people_emoji_path, cid_modulo_emoji_path, format)
-        p.update(inr, completed=100)
         os.makedirs(output_path.parent, exist_ok=True)
         rth =  p.add_task("Rendering to HTML.")
         r.render(comp_data, output_path, p)

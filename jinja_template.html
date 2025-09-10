@@ -3,220 +3,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
-    <style>
-        html {
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            --border-style: none;
-            margin: 0;
-        }
-        body {
-            margin: 0;
-        }
-        .tag {
-            box-sizing: border-box;
-            /* border-radius: 0.2cm; */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.2cm;
-            box-sizing: border-box; /* don't change otherwise height and width are wrong */
-            width: 8.5cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
-            height: 5.5cm;
-        }
-        .top-border {
-            border-top: var(--border-style);
-        }
-        .left-border {
-            border-left: var(--border-style);
-        }
-        .page {
-            justify-content: center;
-            align-content: center;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.05cm;
-        }
-        .emoji {
-            font-family: "Noto Color Emoji", sans-serif;
-        }
-        .assignments {
-            font-size: 0.2cm;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        table {
-            border-collapse: collapse;
-            text-align: center;
-        }
-        th {
-            background-color: lightcoral;
-        }
-        tr {
-            background-color: lightpink;
-        }
-        tr:nth-child(even) {
-            background-color: white;
-        }
-        .front-tag.competitor {
-            background-image: url('graphics/competitor_base.png');
-            background-position: center;
-            background-size: contain;
-        }
-        .front-tag.organizer {
-            background-image: url('graphics/competitor_base.png');
-            background-position: center;
-            background-size: contain;
-        }
-        .front-tag.delegate {
-            background-image: url('graphics/competitor_base.png');
-            background-position: center;
-            background-size: contain;
-        }
-        .fp-name {
-            position: absolute;   
-            top: 0;
-            box-sizing: border-box;
-            left: 3.4cm;
-            max-width: 4.5cm;
-            text-align: center;
-            padding: 0.2cm;
-            height: 100%;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: start;
-            color: white;
-            padding-top: 0.5cm;
-        }
-        .flag img {
-            max-width: 1.5cm;
-            max-height: 1.1cm;
-            box-shadow: 0 0 0.1cm 0.05cm rgba(255, 255, 255, 0.7);
-        }
-        .small-flag img {
-            max-width: 0.4cm;
-            max-height: 0.25cm;
-            box-shadow: 0 0 0.05cm 0.025cm rgba(255, 255, 255, 0.7);
-        }
-        #back-tag {
-            background: linear-gradient(33deg, rgba(0, 0, 0, 1) 0%, rgba(221, 0, 0, 1) 100%);
-            border: 1px solid black;
-            color: white;
-            display: flex;
-            flex-direction: row;
-            padding: 0;
-        }
-        #front-tag {
-            border: 1px solid black;
-        }
-        .rotated-text {
-            writing-mode: vertical-rl;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .event-box {
-            flex-direction: column; 
-            display: flex; 
-            border: 0.02cm solid black; 
-            height: 100%; 
-            border-radius: 0.1cm; 
-            padding: 0.05cm; 
-            align-items: center; 
-            justify-content: center;
-            font-size: 0.15cm;
-            box-sizing: border-box;
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-        .assignment {
-            display: flex; flex-direction: row; text-align: center; justify-content: center; align-items: center; gap: 0.1cm;
-        }
-        .fill-event-image {
-            height: 0.5cm;
-        }
-        .assignment > img {
-            height: 0.4cm;
-            filter: invert(1);
-        }
-        .assignment > span {
-            font-size: 0.4cm;
-        }
-        .events-overview {
-            /*background-color: rgb(97, 152, 255); */
-            width: 6cm; 
-            height: 100%; 
-            display: grid; 
-            grid-template-rows: 1.225cm 1.225cm 1.225cm 1.225cm 1.225cm;
-            grid-template-columns: 1.07cm 1.07cm 1.07cm 1.07cm 1.07cm;
-            padding: 0.2cm; 
-            border-radius: 0.2cm 0.0cm 0.0cm 0.2cm; 
-            box-sizing: border-box;
-            gap: 0.05cm;
-            justify-content: center;
-            align-items: center;
-        }
-        .center-flex-col {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        .center-flex-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: row;
-        }
-        .event-inactive, .replace-class-333bf-r1-active {
-            opacity: 0.4;
-        }
-        .stage-1, .wit {
-            color: white;
-        }
-        .stage-2, .rood {
-            color: rgb(255, 149, 149);
-        }
-        .blauw, .side-stage {
-            color: rgb(154, 154, 255);
-        }
-        .sports-hall, .other {
-            color: rgb(128, 128, 128);
-        }
-        .side-room, .stage-3 {
-            color: yellow;
-        }
-        .person-details {
-            /*background-color: rgb(255, 97, 97);*/
-            width: 2.5cm; 
-            height: 100%; 
-            font-size: 0.15cm; 
-            padding: 0.2cm; 
-            box-sizing: border-box; 
-            border-radius: 0 0.2cm 0.2cm 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: top; 
-            gap: 0.05cm;
-        }
-        .front-tag-name-flag {
-            display: flex; 
-            flex-direction: column; 
-            gap: 0.15cm; 
-            width: 100%;
-            height: 100%;
-            justify-content: space-around;
-        }
-        .bg-fade {
-            /*background: linear-gradient(90deg,rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 20%, rgba(255, 255, 255, 0.7) 80%, rgba(255, 255, 255, 0) 100%);*/
-            /*color: white;*/
-            /*padding: 0.05cm;*/
-        }
-        </style>
+<link href="styles/jinja.css" rel="stylesheet">
 </head>
 <body style="margin: 0;">
     {% for page in pages %}
@@ -224,10 +11,10 @@
         {% for row in page %}
         {% for competitor in row %}
         <div class="tag front-tag competitor {{ competitor.role }}" style="display: unset; position: relative">
-            <div class="fp-name">
-                    <span>{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
-                    <div style="align-items: center; display: flex; justify-content: center; gap: 0.1cm;">
-                        <span style="font-size: medium;">{{ competitor.exp_emoji }} {{ competitor.cid_emoji }} {{ competitor.pep_emoji }}</span>
+            <div class="ft-details">
+                    <div class="name-emoji">
+                        <span class="ft-name">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                        <span class="ft-emoji">{{ competitor.exp_emoji }} {{ competitor.cid_emoji }} {{ competitor.pep_emoji }}</span>
                     </div>
                     <div class="fill-country-flag flag"><img src="graphics/flags/{{ competitor.iso2 }}.png"></div>
             </div>
@@ -235,10 +22,43 @@
         {% endfor %}
         {% endfor %}
     </div>
-    <div class="page">
+    <div class="page" style="flex-direction: row-reverse;">
         {% for row in page %}
         {% for competitor in row %}
-        <div class="tag competitor {{ competitor.role }}" style="display: unset; position: relative">
+        <div class="tag competitor {{ competitor.role }} back-tag">
+            <div class="events-overview" >
+                {% for (event, round), (start, end) in event_times.items() %}
+                {% if round == 1 %}
+                <div class="event-box event-{{ event }} {% if event not in competitor.event_assignments %} event-inactive {% endif %}">
+                    <span> {{ start.strftime('%a %H:%M') }}</span> 
+                    <div class="assignment">
+                        <img src="graphics/svgs/{{ event }}.svg">
+                        <span class="{{ competitor.event_comp_r1_assignments[event].room_name }}">
+                            {{ competitor.event_comp_r1_assignments[event].group }}
+                        </span>
+                    </div>
+                    {% for assignment in competitor.event_help_r1_assignments[event] %}
+                    <span class="{{ assignment.room_name }}">
+                        {{ assignment.role.upper()[0] }}{{ assignment.group }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="person-details">
+                <div class="event-box" style="width: 100%; border: 0.02cm solid black; border-radius: 0.1cm; box-sizing: border-box; padding: 0.05cm; gap: 0.15cm">
+                    <span class="fill-person-name" style="text-align: center; font-size: 0.2cm; font-weight: bold;">{{ competitor.name }}</span>
+                    <span class="center-flex-row" style="gap: 0.05cm;"><span class="fill-country-flag small-flag"><img src="graphics/flags/{{ competitor.iso2 }}.png"></span></span>
+                    <span>#<span class="fill-c-id">15</span></span>
+                </div>
+                <img src="graphics/qrcode_white.png" style="width: 100%; ">
+                <div style="font-size: 0.25cm; flex-wrap: wrap; gap: 0.05cm; display: grid; grid-template-columns: 1fr 2fr 6fr;">
+                    <span>J</span><span>:</span> <span style="text-align: end;">Judge</span>
+                    <span>R</span><span>:</span> <span style="text-align: end;">Runner</span>
+                    <span>S</span><span>:</span> <span style="text-align: end;">Scrambler</span>
+                </div>
+            </div>
         </div>
         {% endfor %}
         {% endfor %}

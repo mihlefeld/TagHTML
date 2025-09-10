@@ -6,6 +6,7 @@ import polars as pl
 import json
 import warnings
 import datetime
+import time
 from rich.progress import Progress
 from typing import List
 from dataclasses import dataclass
@@ -62,7 +63,7 @@ class CompetitorData:
         self.index = 0
 
     def prepare_data(self):
-        comp_data = json.loads(requests.request("GET", f'https://worldcubeassociation.org/api/v0/competitions/{self.comp_id}/wcif/public').content)
+        comp_data = requests.request("GET", f'https://worldcubeassociation.org/api/v0/competitions/{self.comp_id}/wcif/public').json()
         competitor_data = pl.DataFrame(comp_data['persons'])
 
         # count the number of competitions each competitor has been to

@@ -9,7 +9,7 @@ from pathlib import Path
 from rich.progress import Progress
 from collections import defaultdict
 from typing import List
-from bs4 import BeautifulSoup, Tag, NavigableString
+from collections import OrderedDict
 from .datahandler import Competitor, CompetitorData, Assignment
 
 __TEMPLATE__ = pathlib.Path(__file__).absolute().parent.parent / "template.html"
@@ -59,6 +59,19 @@ class JinjaRenderer:
         cid_emoji = ""
         if competitor.idx is not None:
             cid_emoji = self.cid_modulo_emoji[competitor.idx % len(self.cid_modulo_emoji)] 
+        event_assignments = defaultdict(lambda: defaultdict(list))
+        for assignment in competitor.assignments:
+            event_assignments[assignment.event][f"r{assignment.round}"].append(assignment)
+
+        event_comp_r1_assignments = defaultdict(lambda: None)
+        event_help_r1_assignments = defaultdict(list)
+        for assignment in competitor.assignments:
+            if assignment.round != 1:
+                continue
+            if assignment.role == "competitor":
+                event_comp_r1_assignments[assignment.event] = assignment
+            else:
+                event_help_r1_assignments[assignment.event].append(assignment)
         return {
             "name": competitor.name,
             "wca_id": competitor.wca_id,
@@ -67,6 +80,9 @@ class JinjaRenderer:
             "firstname": name_parts[0],
             "lastname": " ".join(name_parts[1:]) if len(name_parts) > 1 else "",
             "assignments": competitor.assignments,
+            "event_assignments": event_assignments,
+            "event_comp_r1_assignments": event_comp_r1_assignments,
+            "event_help_r1_assignments": event_help_r1_assignments,
             "cid_emoji": cid_emoji,
             "pep_emoji": self.people_emoji.get(competitor.wca_id, ""),
             "exp_emoji": self.competition_count_to_emoji(competitor.num_competitions),
@@ -96,9 +112,11 @@ class JinjaRenderer:
             pages.append(current_page)
         
         events = ["333","222","444","555","666","777","333bf","333fm","333oh","clock","minx","pyram","skewb","sq1","444bf","555bf","333mbf"]
+        event_index = {event: i for i, event in enumerate(events)}
+        event_times = OrderedDict(sorted(competitors.event_times.items(), key=lambda x: (event_index[x[0][0]], x[0][1])))
         
         template = self.jinja.get_template(self.template_path.name)
-        rendered = template.render(pages=pages, wca_events=events, event_times=competitors.event_times)
+        rendered = template.render(pages=pages, wca_events=events, event_times=event_times)
         with open(out_path, "w", encoding="utf8") as file:
             file.write(rendered)
             
