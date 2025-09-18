@@ -138,10 +138,12 @@ tr:nth-child(even) {
     border-radius: 0.1cm; 
     padding: 0.05cm; 
     align-items: center; 
-    justify-content: center;
+    justify-content: start;
     font-size: 0.15cm;
     box-sizing: border-box;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(116, 116, 116, 0.3);
+    padding-top: 0.1cm;
+    gap: 0.05cm;
 }
 .event-333 {
     grid-column: auto / span 3;
@@ -161,6 +163,12 @@ tr:nth-child(even) {
 }
 .assignment > span {
     font-size: 0.4cm;
+}
+.help-assignments {
+    display: flex;
+    flex-direction: row;
+    gap: 0.1cm;
+    font-size: xx-small;
 }
 .events-overview {
     /*background-color: rgb(97, 152, 255); */
@@ -195,10 +203,10 @@ tr:nth-child(even) {
     color: white;
 }
 .stage-2, .rood {
-    color: rgb(255, 149, 149);
+    color: rgb(255, 195, 195);
 }
 .blauw, .side-stage {
-    color: rgb(154, 154, 255);
+    color: rgb(173, 173, 255);
 }
 .sports-hall, .other {
     color: rgb(128, 128, 128);
