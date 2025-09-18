@@ -1,9 +1,8 @@
 import pathlib
 import math
-import copy
 import json
-import datetime
 import jinja2
+import re
 from jinja2 import FileSystemLoader
 from pathlib import Path
 from rich.progress import Progress
@@ -25,6 +24,11 @@ __FLAG_BASE_CODE__ = 127397
 def iso2flag(iso2: str):
     return ''.join([chr(__FLAG_BASE_CODE__ + ord(c)) for c in iso2.upper()])
 
+def seperate_native_name(name):
+    matches = re.match(r"([^()]*)(\(([^()]*)\))?", name)
+    latin_name = matches.group(1)
+    native_name = matches.group(3)
+    return latin_name.strip(), native_name.strip() if native_name else ""
 
 
 class JinjaRenderer:
@@ -50,7 +54,8 @@ class JinjaRenderer:
             self.cid_modulo_emoji = list(self.cid_modulo_emoji.values())
     
     def get_render_dict(self, competitor: Competitor):
-        name_parts = competitor.name.split()
+        latin_name, native_name = seperate_native_name(competitor.name)
+        name_parts = latin_name.split()
         cid_emoji = ""
         if competitor.idx is not None:
             cid_emoji = self.cid_modulo_emoji[competitor.idx % len(self.cid_modulo_emoji)] 
@@ -68,7 +73,8 @@ class JinjaRenderer:
             else:
                 event_help_r1_assignments[assignment.event].append(assignment)
         return {
-            "name": competitor.name,
+            "name": latin_name,
+            "native_name": native_name,
             "wca_id": competitor.wca_id,
             "iso2": competitor.iso2,
             "iso2flag": iso2flag(competitor.iso2),
