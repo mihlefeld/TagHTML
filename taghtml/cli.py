@@ -1,9 +1,34 @@
 import typer
 import os
+import shutil
 from pathlib import Path
 from typing import Annotated
 
 app = typer.Typer(add_completion=False, no_args_is_help=True, pretty_exceptions_show_locals=False)
+
+def init_directory():
+    package_dir = Path(__file__).parent.parent
+    graphics = list((package_dir / "graphics").rglob("*"))
+    styles = list((package_dir / "styles").rglob("*"))
+    jsons = list(package_dir.glob("*.json"))
+    htmls = list(package_dir.glob("*.html"))
+    base_files = graphics + styles + jsons + htmls
+    confirmed = False
+    for file in base_files:
+        if file.is_dir():
+            continue
+        rel = file.relative_to(package_dir)
+        if rel.is_file():
+            continue
+        elif not confirmed:
+            value = input("Some files are missing from your directory, do you want to copy them? This will also create folders if necessary. (y/n)")
+            if value.lower().strip() != "y":
+                print("Exiting")
+                exit(1)
+            confirmed = True
+        # print(f"copy {file.absolute().as_posix()} {rel.absolute().as_posix()}")
+        rel.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(file, rel)
 
 @app.command()
 def main(
@@ -21,6 +46,7 @@ def main(
     ):    
     from taghtml.datahandler import update_data, CompetitorData
     from taghtml.jinjarenderer import JinjaRenderer
+    init_directory()
     if update:
         update_data()
     from rich.progress import Progress
