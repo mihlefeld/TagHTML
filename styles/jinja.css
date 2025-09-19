@@ -54,19 +54,19 @@ tr:nth-child(even) {
     background-color: white;
 }
 .front-tag.competitor {
-    background-image: url('../graphics/competitor_base.png');
+    background-image: url('../graphics/competitor-base.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
 .front-tag.organizer {
-    background-image: url('../graphics/competitor_base.png');
+    background-image: url('../graphics/competitor-base.png');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
 }
 .front-tag.delegate {
-    background-image: url('../graphics/competitor_base.png');
+    background-image: url('../graphics/competitor-base.png');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -199,17 +199,14 @@ tr:nth-child(even) {
 .event-inactive, .replace-class-333bf-r1-active {
     opacity: 0.4;
 }
-.stage-1, .wit {
-    color: white;
+.stage-1 {
+    color: #c4c4c4;
 }
-.stage-2, .rood {
+.stage-2 {
     color: rgb(255, 195, 195);
 }
-.blauw, .side-stage {
+.side-stage {
     color: rgb(173, 173, 255);
-}
-.sports-hall, .other {
-    color: rgb(128, 128, 128);
 }
 .side-room, .stage-3 {
     color: yellow;

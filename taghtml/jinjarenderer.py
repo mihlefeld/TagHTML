@@ -1,20 +1,17 @@
-import pathlib
 import math
 import json
 import jinja2
 import re
 from jinja2 import FileSystemLoader
 from pathlib import Path
-from rich.progress import Progress
 from collections import defaultdict
-from typing import List
 from collections import OrderedDict
 from .datahandler import Competitor, CompetitorData, Assignment
 
-__TEMPLATE__ = pathlib.Path(__file__).absolute().parent.parent / "template.html"
-__EXP_EMOJI__ = pathlib.Path(__file__).absolute().parent.parent / "experience_emoji.json"
-__PEOPLE_EMOJI__ = pathlib.Path(__file__).absolute().parent.parent / "people_emoji.json"
-__CID_MODULO_EMOJI__ = pathlib.Path(__file__).absolute().parent.parent / "cid_modulo_emoji.json"
+__TEMPLATE__ = Path(__file__).absolute().parent.parent / "template.html"
+__EXP_EMOJI__ = Path(__file__).absolute().parent.parent / "experience_emoji.json"
+__PEOPLE_EMOJI__ = Path(__file__).absolute().parent.parent / "people_emoji.json"
+__CID_MODULO_EMOJI__ = Path(__file__).absolute().parent.parent / "cid_modulo_emoji.json"
 __FORMATS__ = {
     "A4": (21.0, 29.7),
     "Letter": (21.59, 27.94)

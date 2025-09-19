@@ -38,7 +38,7 @@ def main(
         import fastapi
         from fastapi.staticfiles import StaticFiles
         server = fastapi.FastAPI()
-        @server.get("/render")
+        @server.get("/")
         def render():
             return fastapi.responses.HTMLResponse(r.render())
         import uvicorn
