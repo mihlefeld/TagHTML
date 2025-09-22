@@ -66,7 +66,8 @@ class JinjaRenderer:
             if assignment.round != 1:
                 continue
             if assignment.role == "competitor":
-                event_comp_r1_assignments[assignment.event] = assignment
+                if not assignment.event in event_comp_r1_assignments:
+                    event_comp_r1_assignments[assignment.event] = assignment
             else:
                 event_help_r1_assignments[assignment.event].append(assignment)
         return {

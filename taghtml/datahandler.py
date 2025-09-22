@@ -100,8 +100,8 @@ class CompetitorData:
                                 event, round_, group = child_activity['activityCode'].split('-')[:3]
                             except:
                                 continue
-                            start_time = datetime.datetime.strptime(activity["startTime"], "%Y-%m-%dT%H:%M:%SZ")
-                            end_time = datetime.datetime.strptime(activity["endTime"], "%Y-%m-%dT%H:%M:%SZ")
+                            start_time = datetime.datetime.strptime(activity["startTime"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.UTC).astimezone()
+                            end_time = datetime.datetime.strptime(activity["endTime"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.UTC).astimezone()
                             activities[child_activity['id']] = {
                                 'event': event,
                                 'round': int(round_[1:]),

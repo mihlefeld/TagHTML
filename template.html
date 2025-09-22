@@ -35,9 +35,11 @@
                     <span> {{ start.strftime('%a %H:%M') }}</span> 
                     <div class="assignment">
                         <img src="graphics/svgs/{{ event }}.svg">
+                        {% if competitor.event_comp_r1_assignments[event] %}
                         <span class="{{ competitor.event_comp_r1_assignments[event].room_name }}">
                             {{ competitor.event_comp_r1_assignments[event].group }}
                         </span>
+                        {% endif %}
                     </div>
                     <div class="help-assignments">
                     {% for assignment in competitor.event_help_r1_assignments[event] %}
