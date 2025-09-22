@@ -67,7 +67,7 @@ class JinjaRenderer:
                 continue
             if assignment.role == "competitor":
                 if not assignment.event in event_comp_r1_assignments:
-                    event_comp_r1_assignments[assignment.event] = assignment
+                    event_comp_r1_assignments[assignment.event] = assignment # TODO: change to list for fmc and mbld
             else:
                 event_help_r1_assignments[assignment.event].append(assignment)
         return {

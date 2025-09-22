@@ -111,7 +111,9 @@ class CompetitorData:
                                 'end_time': end_time,
                                 'room_name': room['name'].lower().replace(' ', '-')
                             }
-                            self.event_times[(event, int(round_[1:]))] = (start_time, end_time)
+                            key = (event, int(round_[1:]))
+                            if key not in self.event_times: # TODO: change to list for mbld and fmc
+                                self.event_times[key] = (start_time, end_time)
         competitor_assignments = {}
         for person in comp_data['persons']:
             person_assignments = []
