@@ -2,6 +2,11 @@ import math
 import json
 import jinja2
 import re
+import qrcode
+import qrcode.image.svg
+import base64
+import urllib
+import urllib.parse
 from jinja2 import FileSystemLoader
 from pathlib import Path
 from collections import defaultdict
@@ -26,6 +31,19 @@ def seperate_native_name(name):
     latin_name = matches.group(1)
     native_name = matches.group(3)
     return latin_name.strip(), native_name.strip() if native_name else ""
+
+def make_qr(data):
+    factory = qrcode.image.svg.SvgPathImage
+    factory.QR_PATH_STYLE["fill"] = "#fff"
+    qr = qrcode.QRCode(
+        version=None,
+        image_factory=factory,
+        border=0
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image()
+    return "data:image/svg+xml;base64," + base64.b64encode(img.to_string(encoding="utf-8")).decode("utf-8")
 
 
 class JinjaRenderer:
@@ -70,6 +88,11 @@ class JinjaRenderer:
                     event_comp_r1_assignments[assignment.event] = assignment # TODO: change to list for fmc and mbld
             else:
                 event_help_r1_assignments[assignment.event].append(assignment)
+        if competitor.idx: # TODO; make link configurable or something, allow configuring color as well
+            qr = make_qr(urllib.parse.quote(f"competitiongroups.com/competitions/{self.comp_id}/persons/{competitor.idx}"))
+        else:
+            qr = make_qr(urllib.parse.quote(f"competitiongroups.com/competitions/{self.comp_id}"))
+        
         return {
             "name": latin_name,
             "native_name": native_name,
@@ -88,10 +111,12 @@ class JinjaRenderer:
             "id": competitor.idx,
             "country": competitor.country,
             "num_competitions": competitor.num_competitions,
-            "roles": competitor.roles
+            "roles": competitor.roles,
+            "qr": qr
         }
     
     def setup(self, competitors: CompetitorData):        
+        self.comp_id = competitors.comp_id
         self.comp_name = competitors.comp_name
         pages: list[list[dict]] = []
         current_page = []

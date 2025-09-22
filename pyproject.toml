@@ -14,7 +14,8 @@ dependencies = [
     "requests",
     "typer",
     "beautifulsoup4",
-    "fastapi"
+    "fastapi",
+    "qrcode"
 ]
 
 [project.scripts]

@@ -57,7 +57,7 @@
                     <img  class="small-flag" src="graphics/flags/{{ competitor.iso2 }}.png">
                     <span># {{ competitor.id }}</span>
                 </div>
-                <img src="graphics/qrcode_white.png" style="width: 100%; ">
+                <img src="{{ competitor.qr }}" style="width: 100%; padding: 0.05cm;">
                 <div style="font-size: 0.25cm; flex-wrap: wrap; gap: 0.05cm; display: grid; grid-template-columns: 1fr 2fr 6fr;">
                     <span>J</span><span>:</span> <span style="text-align: end;">Judge</span>
                     <span>R</span><span>:</span> <span style="text-align: end;">Runner</span>
