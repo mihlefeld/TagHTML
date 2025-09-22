@@ -36,7 +36,7 @@ body {
     font-size: small;
     top: 0.1cm;
     left: 0.1cm;
-    color: white;
+    color: rgb(155, 155, 155);
 }
 .emoji {
     font-family: "Noto Color Emoji", sans-serif;
@@ -100,6 +100,11 @@ tr:nth-child(even) {
 .ft-name {
     font-weight: 1000;
     font-size: 0.6cm;
+}
+.bt-name {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.25cm;
 }
 .name-emoji {
     display: flex;

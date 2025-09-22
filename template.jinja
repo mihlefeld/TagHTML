@@ -61,7 +61,13 @@
             </div>
             <div class="person-details">
                 <div class="event-box" style="width: 100%; border: 0.02cm solid black; border-radius: 0.1cm; box-sizing: border-box; padding: 0.05cm; gap: 0.15cm; justify-content: center;">
-                    <span class="fill-person-name" style="text-align: center; font-size: 0.2cm; font-weight: bold;">{{ competitor.firstname }}<br>{{competitor.lastname}}</span>
+                    {% if competitor.name|length > 30 %}
+                    <span class="bt-name" style="font-size: 0.2cm;">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                    {% elif competitor.name|length > 20 %}
+                    <span class="bt-name" style="font-size: 0.22cm">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                    {% else %}
+                    <span class="bt-name" style="font-size: 0.25cm;">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                    {% endif %}
                     <img  class="small-flag" src="graphics/flags/{{ competitor.iso2 }}.png">
                     <span># {{ competitor.id }}</span>
                 </div>
