@@ -51,6 +51,7 @@ class JinjaRenderer:
             self, width, height, template_path=__TEMPLATE__, 
             exp_emoji_path=__EXP_EMOJI__, people_emoji_path=__PEOPLE_EMOJI__,
             cid_modulo_emoji_path=__CID_MODULO_EMOJI__, format="A4") -> None:
+        self.paper_format = format
         self.page_width, self.page_height = __FORMATS__[format]
         self.tag_width = width
         self.tag_height = height
@@ -139,7 +140,17 @@ class JinjaRenderer:
 
     def render(self):
         self.template = self.jinja.get_template(self.template_path.name)
-        return self.template.render(pages=self.pages, wca_events=self.events, event_times=self.event_times, event_r1_times=self.event_r1_times)
+        return self.template.render(
+            pages=self.pages, 
+            wca_events=self.events, 
+            event_times=self.event_times, 
+            event_r1_times=self.event_r1_times,
+            tag_width=self.tag_width,
+            tag_height=self.tag_height,
+            page_width=self.page_width,
+            page_height=self.page_height,
+            paper_format=self.paper_format
+        )
 
     def render_file(self, competitors: CompetitorData, out_path) -> str:
         self.setup(competitors)

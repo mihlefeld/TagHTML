@@ -1,5 +1,7 @@
 html {
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: "Funnel Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
     margin: 0;
 }
 body {
@@ -18,8 +20,6 @@ body {
     justify-content: space-between;
     padding: 0.2cm;
     box-sizing: border-box; /* don't change otherwise height and width are wrong */
-    width: 8.5cm; /* this will be overriden by the height and width entered to the program change these to your physical name tag size for testing your design before running the script */
-    height: 5.5cm;
     border: 0.1cm solid black;
 }
 .page {
@@ -30,6 +30,13 @@ body {
     /*gap: 0.05cm;*/
     width: 21cm;
     height: 29.7cm;
+}
+.competitor-id {
+    position: absolute;
+    font-size: small;
+    top: 0.1cm;
+    left: 0.1cm;
+    color: white;
 }
 .emoji {
     font-family: "Noto Color Emoji", sans-serif;
@@ -152,7 +159,7 @@ tr:nth-child(even) {
     grid-column: auto / span 2;
 }
 .assignment {
-    display: flex; flex-direction: row; text-align: center; justify-content: center; align-items: center; gap: 0.1cm;
+    display: flex; flex-direction: row; text-align: center; justify-content: center; align-items: center; gap: 0.05cm;
 }
 .fill-event-image {
     height: 0.5cm;
@@ -163,6 +170,7 @@ tr:nth-child(even) {
 }
 .assignment > span {
     font-size: 0.4cm;
+    line-height: 1;
 }
 .help-assignments {
     display: flex;

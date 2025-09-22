@@ -34,13 +34,13 @@ def init_directory():
 def main(
         comp_id: Annotated[str, typer.Argument(help="Competition ID from the competition link.")], 
         output_path: Annotated[Path, typer.Argument(help="File name of the output html file.")],
-        height: Annotated[float, typer.Option("--height", "-h", help="Height of each nametag in cm.")] = 5.4,
-        width: Annotated[float, typer.Option("--width", "-w", help="Width of each nametag in cm.")] = 9.0, 
+        height: Annotated[float, typer.Option("--height", "-h", help="Height of each nametag in cm.")] = 5.5,
+        width: Annotated[float, typer.Option("--width", "-w", help="Width of each nametag in cm.")] = 8.5, 
         update: Annotated[bool, typer.Option(help="Set this flag to update the database before generating the nametags.")] = False, 
-        template_path: Annotated[Path, typer.Option(help="Path to the html template file.")] = Path("template.html"), 
+        template_path: Annotated[Path, typer.Option(help="Path to the html template file.")] = Path("template.jinja"), 
         experience_emoji_path: Annotated[Path, typer.Option("--experience-emoji-path", "--eep", help="Path to the json file mapping a number of competitions to an emoji.")] = "experience_emoji.json", 
-        people_emoji_path: Annotated[Path, typer.Option("--people-emoji-path", "--pep", help="Path to the json file mapping a number of competitions to an emoji.")] = "people_emoji.json", 
-        cid_modulo_emoji_path: Annotated[Path, typer.Option("--cid-modulo-emoji-path", "--cep", help="Path to the json file mapping a number of competitions to an emoji.")] = "cid_modulo_emoji.json", 
+        people_emoji_path: Annotated[Path, typer.Option("--people-emoji-path", "--pep", help="Path to the json file mapping wca id to an emoji.")] = "people_emoji.json", 
+        cid_modulo_emoji_path: Annotated[Path, typer.Option("--cid-modulo-emoji-path", "--cep", help="Path to the json file mapping the competitor id to an emoji.")] = "cid_modulo_emoji.json", 
         format: Annotated[str, typer.Option(help="Page format to use for printing")] = "A4",
         interactive: Annotated[bool, typer.Option(help="Run an http server that serves and reloads the template everytime it is changed. Canges to the emoji currently need a restart.")] = True
     ):    
