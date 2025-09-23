@@ -17,7 +17,9 @@
     <div class="page">
         {% for competitor in page %}
         <div class="tag front-tag competitor {{ competitor.role }}" style="display: unset; position: relative">
+            {% if competitor.id %}
             <span class="competitor-id"> {{ competitor.id }}</span>
+            {% endif %}
             <div class="ft-details">
                     <div class="name-emoji">
                         {% if competitor.name|length > 30 %}
