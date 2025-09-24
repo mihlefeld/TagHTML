@@ -7,3 +7,7 @@ name_tags.html.pdf
 .vscode/
 *.pyc
 out.html
+/graphics
+/styles
+/templates
+/jsons
