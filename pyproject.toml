@@ -13,10 +13,10 @@ dependencies = [
     "polars",
     "requests",
     "typer",
-    "beautifulsoup4",
+    "jinja2",
     "fastapi",
     "qrcode",
-    "papersize"
+    "papersize",
 ]
 
 [project.scripts]
