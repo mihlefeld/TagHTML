@@ -1,0 +1,333 @@
+<html>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+<style>
+    html {
+        font-family: "Funnel Sans", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        margin: 0;
+    }
+    body {
+        margin: 0;
+    }
+    @page {
+        size: {{ page_width }}cm {{ page_height }}cm; /* important to keep this */
+        margin: 0;
+    }
+    .tag {
+        width: {{ tag_width }}cm; /* important to keep this */
+        height: {{ tag_height }}cm; /* important to keep this */
+        box-sizing: border-box;
+        /* border-radius: 0.2cm; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.2cm;
+        box-sizing: border-box; /* don't change otherwise height and width are wrong */
+        border: 0.1cm solid black;
+    }
+    .page {
+        width: {{ page_width }}; /* important to keep this */
+        height: {{ page_height }}; /* important to keep this */
+        justify-content: center;
+        align-content: center;
+        display: flex;
+        flex-wrap: wrap;
+        /*gap: 0.05cm;*/
+        width: 21cm;
+        height: 29.7cm;
+    }
+    .competitor-id {
+        position: absolute;
+        font-size: small;
+        top: 0.1cm;
+        left: 0.1cm;
+        color: rgb(255, 255, 255);
+    }
+    .emoji {
+        font-family: "Noto Color Emoji", sans-serif;
+    }
+    .assignments {
+        font-size: 0.2cm;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    table {
+        border-collapse: collapse;
+        text-align: center;
+    }
+    th {
+        background-color: lightcoral;
+    }
+    tr {
+        background-color: lightpink;
+    }
+    tr:nth-child(even) {
+        background-color: white;
+    }
+    .front-tag.competitor {
+        background: radial-gradient(circle,rgba(217, 69, 69, 1) 0%, rgba(0, 0, 0, 1) 100%);;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .ft-details {
+        box-sizing: border-box;
+        text-align: center;
+        padding: 0.2cm;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        justify-content: space-around;
+        align-items: center;
+        color: white;
+        padding-top: 0.5cm;
+        padding-bottom: 0.5cm;
+    }
+    .ft-name {
+        font-weight: 1000;
+        font-size: 0.6cm;
+    }
+    .bt-name {
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.25cm;
+    }
+    .name-emoji {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1cm;
+    }
+    .ft-emoji {
+        font-size: larger;
+    }
+    .flag {
+        max-width: 1.5cm;
+        max-height: 1.1cm;
+        box-shadow: 0 0 0.1cm 0.05cm rgba(255, 255, 255, 0.7);
+    }
+    .small-flag {
+        max-width: 0.4cm;
+        max-height: 0.25cm;
+        box-shadow: 0 0 0.05cm 0.025cm rgba(255, 255, 255, 0.7);
+    }
+    .back-tag {
+        background: linear-gradient(33deg, rgba(0, 0, 0, 1) 0%, rgba(221, 0, 0, 1) 100%);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        color: white;
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+    }
+    .rotated-text {
+        writing-mode: vertical-rl;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .event-box {
+        flex-direction: column; 
+        display: flex; 
+        border: 0.02cm solid black; 
+        height: 100%; 
+        border-radius: 0.1cm; 
+        padding: 0.05cm; 
+        align-items: center; 
+        justify-content: start;
+        font-size: 0.15cm;
+        box-sizing: border-box;
+        background-color: rgba(116, 116, 116, 0.3);
+        padding-top: 0.1cm;
+        gap: 0.05cm;
+    }
+    .event-333 {
+        grid-column: auto / span 3;
+    }
+    .event-222 {
+        grid-column: auto / span 2;
+    }
+    .assignment {
+        display: flex; flex-direction: row; text-align: center; justify-content: center; align-items: center; gap: 0.05cm;
+    }
+    .fill-event-image {
+        height: 0.5cm;
+    }
+    .assignment > img {
+        height: 0.4cm;
+        filter: invert(1);
+    }
+    .assignment > span {
+        font-size: 0.4cm;
+        line-height: 1;
+    }
+    .help-assignments {
+        display: flex;
+        flex-direction: row;
+        gap: 0.1cm;
+        font-size: xx-small;
+    }
+    .events-overview {
+        /*background-color: rgb(97, 152, 255); */
+        width: 6cm; 
+        height: 100%; 
+        display: grid; 
+        grid-template-rows: 1.225cm 1.225cm 1.225cm 1.225cm 1.225cm;
+        grid-template-columns: 1.07cm 1.07cm 1.07cm 1.07cm 1.07cm;
+        padding: 0.2cm; 
+        border-radius: 0.2cm 0.0cm 0.0cm 0.2cm; 
+        box-sizing: border-box;
+        gap: 0.05cm;
+        justify-content: center;
+        align-items: center;
+    }
+    .center-flex-col {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .center-flex-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+    }
+    .event-inactive, .replace-class-333bf-r1-active {
+        opacity: 0.4;
+    }
+    .stage-1 {
+        color: #c4c4c4;
+    }
+    .stage-2 {
+        color: rgb(255, 195, 195);
+    }
+    .side-stage {
+        color: rgb(173, 173, 255);
+    }
+    .side-room, .stage-3 {
+        color: yellow;
+    }
+    .person-details {
+        /*background-color: rgb(255, 97, 97);*/
+        width: 2.5cm; 
+        height: 100%; 
+        font-size: 0.15cm; 
+        padding: 0.2cm; 
+        box-sizing: border-box; 
+        border-radius: 0 0.2cm 0.2cm 0; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: top; 
+        gap: 0.05cm;
+    }
+    .front-tag-name-flag {
+        display: flex; 
+        flex-direction: column; 
+        gap: 0.15cm; 
+        width: 100%;
+        height: 100%;
+        justify-content: space-around;
+    }
+    .comp-name {
+        /*writing-mode: sideways-rl;*/
+        font-size: x-small;
+        text-align: center;
+        width: 100%;
+        position: absolute;
+        /*right: 0.05cm;*/
+        top: 0.05cm;
+        color: white;
+    }
+</style>
+</head>
+<body style="margin: 0;">
+    {% for page in pages %}
+    <div class="page">
+        {% for competitor in page %}
+        <div class="tag front-tag competitor {{ competitor.role }}" style="display: unset; position: relative">
+            {% if competitor.id %}
+            <span class="competitor-id"> {{ competitor.id }}</span>
+            {% endif %}
+            <div class="ft-details">
+                    <div class="name-emoji">
+                        {% if competitor.name|length > 30 %}
+                        <span class="ft-name" style="font-size: 0.45cm;">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                        {% elif competitor.name|length > 20 %}
+                        <span class="ft-name" style="font-size: 0.5cm">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                        {% else %}
+                        <span class="ft-name">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                        {% endif %}
+                        <span class="ft-emoji">{{ competitor.exp_emoji }} {{ competitor.cid_emoji }} {{ competitor.pep_emoji }}</span>
+                    </div>
+                    <img class="flag" src="graphics/flags/{{ competitor.iso2 }}.png">
+            </div>
+            <div class="comp-name">
+                {{ comp_name }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="page" style="flex-direction: row-reverse;">
+        {% for competitor in page %}
+        <div class="tag competitor {{ competitor.role }} back-tag">
+            <div class="events-overview" >
+                {% for event, (start, end) in event_r1_times.items() %}
+                <div class="event-box event-{{ event }} {% if event not in competitor.event_assignments %} event-inactive {% endif %}">
+                    <span> {{ start.strftime('%a %H:%M') }}</span> 
+                    <div class="assignment">
+                        <img src="graphics/svgs/{{ event }}.svg">
+                        {% if competitor.event_comp_r1_assignments[event] %}
+                        <span class="{{ competitor.event_comp_r1_assignments[event].room_name }}">
+                            {{ competitor.event_comp_r1_assignments[event].group }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="help-assignments">
+                    {% for assignment in competitor.event_help_r1_assignments[event] %}
+                        <span class="{{ assignment.room_name }}">
+                            {{ assignment.role.upper()[0] }}{{ assignment.group }}
+                        </span>
+                    {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="person-details">
+                <div class="event-box" style="width: 100%; border: 0.02cm solid black; border-radius: 0.1cm; box-sizing: border-box; padding: 0.05cm; gap: 0.15cm; justify-content: center;">
+                    {% if competitor.name|length > 30 %}
+                    <span class="bt-name" style="font-size: 0.2cm;">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                    {% elif competitor.name|length > 20 %}
+                    <span class="bt-name" style="font-size: 0.22cm">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                    {% else %}
+                    <span class="bt-name" style="font-size: 0.25cm;">{{ competitor.firstname }} <br> {{ competitor.lastname }}</span>
+                    {% endif %}
+                    <img  class="small-flag" src="graphics/flags/{{ competitor.iso2 }}.png">
+                    <span># {{ competitor.id }}</span>
+                </div>
+                <img src="{{ competitor.qr }}" style="width: 100%; padding: 0.05cm;">
+                <div style="font-size: 0.25cm; flex-wrap: wrap; gap: 0.05cm; display: grid; grid-template-columns: 1fr 2fr 6fr;">
+                    <span>J</span><span>:</span> <span style="text-align: end;">Judge</span>
+                    <span>R</span><span>:</span> <span style="text-align: end;">Runner</span>
+                    <span>S</span><span>:</span> <span style="text-align: end;">Scrambler</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>
