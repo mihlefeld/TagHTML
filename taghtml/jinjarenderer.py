@@ -7,6 +7,8 @@ import qrcode.image.svg
 import base64
 import urllib
 import urllib.parse
+import datetime
+from json import JSONEncoder
 from jinja2 import FileSystemLoader
 from pathlib import Path
 from papersize import parse_papersize
@@ -41,6 +43,27 @@ def make_qr(data):
     qr.make(fit=True)
     img = qr.make_image()
     return "data:image/svg+xml;base64," + base64.b64encode(img.to_string(encoding="utf-8")).decode("utf-8")
+
+# keep this code around to save an example of the data structure
+def simplify_competitor_dict(competitor_dict):
+    event_assignments = dict([(k, dict(v)) for k, v in competitor_dict["event_assignments"].items()][:2])
+    event_comp_r1_assignments = dict(list(competitor_dict["event_comp_r1_assignments"].items())[:2])
+    event_help_r1_assignments = dict(list(competitor_dict["event_help_r1_assignments"].items())[:2])
+    return {
+        **competitor_dict, 
+        "assignments": competitor_dict["assignments"][:2],
+        "event_assignments": event_assignments, 
+        "event_comp_r1_assignments": event_comp_r1_assignments, 
+        "event_help_r1_assignments": event_help_r1_assignments,
+        "qr": competitor_dict["qr"][:20]
+    }
+
+def save_data_dict_sample(data_dict):
+    pages = data_dict["pages"]
+    pages = [[simplify_competitor_dict(pages[0][0])]]
+    with open("sample.py", "w", encoding="utf8") as file:
+        sample_dict = {**data_dict, "pages": pages, "event_times": dict(data_dict["event_times"])}
+        file.write(str(sample_dict))
 
 
 class JinjaRenderer:
@@ -147,7 +170,7 @@ class JinjaRenderer:
             self.tag_height = tag_height if tag_height else self.tag_height
             self.setup(self.competitors)
         self.template = self.jinja.get_template(self.template_path.name)
-        return self.template.render(
+        data_dict = dict(
             comp_name=self.comp_name,
             comp_id=self.comp_id,
             pages=self.pages, 
@@ -159,6 +182,7 @@ class JinjaRenderer:
             page_width=self.page_width,
             page_height=self.page_height,
         )
+        return self.template.render(**data_dict)
 
     def render_file(self, competitors: CompetitorData, out_path) -> str:
         self.setup(competitors)

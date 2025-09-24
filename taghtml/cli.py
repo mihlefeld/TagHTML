@@ -37,7 +37,7 @@ def main(
         height: Annotated[float, typer.Option("--height", "-h", help="Height of each nametag in cm.")] = 5.5,
         width: Annotated[float, typer.Option("--width", "-w", help="Width of each nametag in cm.")] = 8.5, 
         update: Annotated[bool, typer.Option(help="Set this flag to update the database before generating the nametags.")] = False, 
-        template_path: Annotated[Path, typer.Option(help="Path to the html template file.")] = Path("template.jinja"), 
+        template_path: Annotated[Path, typer.Option("--template", "-t", help="Path to the html template file.")] = Path("templates/basic.jinja"), 
         experience_emoji_path: Annotated[Path, typer.Option("--experience-emoji-path", "--eep", help="Path to the json file mapping a number of competitions to an emoji.")] = "experience_emoji.json", 
         people_emoji_path: Annotated[Path, typer.Option("--people-emoji-path", "--pep", help="Path to the json file mapping wca id to an emoji.")] = "people_emoji.json", 
         cid_modulo_emoji_path: Annotated[Path, typer.Option("--cid-modulo-emoji-path", "--cep", help="Path to the json file mapping the competitor id to an emoji.")] = "cid_modulo_emoji.json", 

@@ -3,10 +3,8 @@ import os
 import requests
 import zipfile
 import polars as pl
-import json
 import warnings
 import datetime
-import time
 from rich.progress import Progress
 from typing import List
 from dataclasses import dataclass
@@ -40,7 +38,6 @@ class Assignment:
     group_start_time: datetime.datetime
     group_end_time: datetime.datetime
     room_name: str
-
 
 @dataclass
 class Competitor:
@@ -109,12 +106,11 @@ class CompetitorData:
                                 'event': event,
                                 'round': int(round_[1:]),
                                 'group': int(group[1:]),
-                                'start_end_time': f"{start_time.strftime("%H:%M")} - {end_time.strftime("%H:%M")}",
                                 'start_time': start_time,
                                 'group_start_time': group_start_time,
                                 'group_end_time': group_end_time,
                                 'end_time': end_time,
-                                'room_name': room['name'].lower().replace(' ', '-')
+                                'room_name': room['name'].lower().replace(' ', '-'),
                             }
                             key = (event, int(round_[1:]))
                             if key not in self.event_times: # TODO: change to list for mbld and fmc
@@ -135,15 +131,8 @@ class CompetitorData:
                         continue
 
                     person_assignments.append(Assignment(
-                            event=activity['event'], 
-                            round=activity['round'],
-                            group=activity['group'], 
-                            role=role.replace("staff-", ""), 
-                            start_time=activity['start_time'], 
-                            end_time=activity['end_time'], 
-                            group_start_time=activity['group_start_time'], 
-                            group_end_time=activity['group_end_time'],
-                            room_name=activity['room_name']
+                            role=role, 
+                            **activity
                         )
                     )
                 except KeyError as e:
