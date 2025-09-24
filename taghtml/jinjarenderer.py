@@ -9,6 +9,7 @@ import urllib
 import urllib.parse
 from jinja2 import FileSystemLoader
 from pathlib import Path
+from papersize import parse_papersize
 from collections import defaultdict
 from collections import OrderedDict
 from .datahandler import Competitor, CompetitorData, Assignment
@@ -17,10 +18,6 @@ __TEMPLATE__ = Path(__file__).absolute().parent.parent / "template.html"
 __EXP_EMOJI__ = Path(__file__).absolute().parent.parent / "experience_emoji.json"
 __PEOPLE_EMOJI__ = Path(__file__).absolute().parent.parent / "people_emoji.json"
 __CID_MODULO_EMOJI__ = Path(__file__).absolute().parent.parent / "cid_modulo_emoji.json"
-__FORMATS__ = {
-    "A4": (21.0, 29.7),
-    "Letter": (21.59, 27.94)
-}
 __FLAG_BASE_CODE__ = 127397
 
 def iso2flag(iso2: str):
@@ -50,14 +47,10 @@ class JinjaRenderer:
     def __init__(
             self, width, height, template_path=__TEMPLATE__, 
             exp_emoji_path=__EXP_EMOJI__, people_emoji_path=__PEOPLE_EMOJI__,
-            cid_modulo_emoji_path=__CID_MODULO_EMOJI__, format="A4") -> None:
-        self.paper_format = format
-        self.page_width, self.page_height = __FORMATS__[format]
+            cid_modulo_emoji_path=__CID_MODULO_EMOJI__, papersize="A4") -> None:
+        self.page_width, self.page_height = map(float, parse_papersize(papersize, "cm"))
         self.tag_width = width
         self.tag_height = height
-        self.columns = int(math.floor(self.page_width / width))
-        self.rows = int(math.floor(self.page_height / height))
-        self.per_page = self.columns * self.rows
         self.valid_replace_tags = defaultdict(lambda: defaultdict(bool))
         self.template_path = template_path
         self.jinja = jinja2.Environment(loader=FileSystemLoader(template_path.parent.absolute().as_posix()), autoescape=False, auto_reload=True)
@@ -68,6 +61,8 @@ class JinjaRenderer:
         self.cid_modulo_emoji = json.load(open(cid_modulo_emoji_path, encoding="UTF-8"))
         if isinstance(self.cid_modulo_emoji, dict):
             self.cid_modulo_emoji = list(self.cid_modulo_emoji.values())
+        self.render_dicts = {}
+
     
     def get_render_dict(self, competitor: Competitor):
         latin_name, native_name = seperate_native_name(competitor.name)
@@ -116,7 +111,11 @@ class JinjaRenderer:
             "qr": qr
         }
     
-    def setup(self, competitors: CompetitorData):        
+    def setup(self, competitors: CompetitorData):
+        self.columns = int(math.floor(self.page_width / self.tag_width))
+        self.rows = int(math.floor(self.page_height / self.tag_height))
+        self.per_page = self.columns * self.rows
+        self.competitors = competitors
         self.comp_id = competitors.comp_id
         self.comp_name = competitors.comp_name
         pages: list[list[dict]] = []
@@ -126,10 +125,14 @@ class JinjaRenderer:
                 if len(current_page) != 0:
                     pages.append(current_page)
                 current_page = []
-            current_page.append(self.get_render_dict(competitor))
+            if i not in self.render_dicts:
+                self.render_dicts[i] = self.get_render_dict(competitor)
+            current_page.append(self.render_dicts[i])
         if len(current_page) != 0:
             while len(current_page) != self.per_page:
-                current_page.append(self.get_render_dict(Competitor(-1, "2042DUMM00", "No Name", "Germany", "de", 0, [], [])))
+                if -1 not in self.render_dicts:
+                    self.render_dicts[-1] = self.get_render_dict(Competitor(-1, "2042DUMM00", "No Name", "Germany", "de", 0, [], []))
+                current_page.append(self.render_dicts[-1])
             pages.append(current_page)
         self.pages = pages
                 
@@ -138,9 +141,15 @@ class JinjaRenderer:
         self.event_r1_times = OrderedDict(sorted([(event, t) for (event, round), t in competitors.event_times.items() if round == 1], key=lambda x: self.event_index[x[0]]))
         self.template = self.jinja.get_template(self.template_path.name)
 
-    def render(self):
+    def render(self, tag_width=None, tag_height=None):
+        if tag_width != None or tag_height != None and (tag_width != self.tag_width or tag_height != self.tag_height):
+            self.tag_width = tag_width if tag_width else self.tag_width
+            self.tag_height = tag_height if tag_height else self.tag_height
+            self.setup(self.competitors)
         self.template = self.jinja.get_template(self.template_path.name)
         return self.template.render(
+            comp_name=self.comp_name,
+            comp_id=self.comp_id,
             pages=self.pages, 
             wca_events=self.events, 
             event_times=self.event_times, 
@@ -149,7 +158,6 @@ class JinjaRenderer:
             tag_height=self.tag_height,
             page_width=self.page_width,
             page_height=self.page_height,
-            paper_format=self.paper_format
         )
 
     def render_file(self, competitors: CompetitorData, out_path) -> str:

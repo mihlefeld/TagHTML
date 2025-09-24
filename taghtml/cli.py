@@ -11,8 +11,8 @@ def init_directory():
     graphics = list((package_dir / "graphics").rglob("*"))
     styles = list((package_dir / "styles").rglob("*"))
     jsons = list(package_dir.glob("*.json"))
-    htmls = list(package_dir.glob("*.html"))
-    base_files = graphics + styles + jsons + htmls
+    templates = list(package_dir.glob("*.html")) + list(package_dir.glob("*.html"))
+    base_files = graphics + styles + jsons + templates
     confirmed = False
     for file in base_files:
         if file.is_dir():
@@ -33,7 +33,7 @@ def init_directory():
 @app.command()
 def main(
         comp_id: Annotated[str, typer.Argument(help="Competition ID from the competition link.")], 
-        output_path: Annotated[Path, typer.Argument(help="File name of the output html file.")],
+        output_path: Annotated[Path | None, typer.Argument(help="File name of the output html file. If empty, will try to start an interactive server instead.")] = None,
         height: Annotated[float, typer.Option("--height", "-h", help="Height of each nametag in cm.")] = 5.5,
         width: Annotated[float, typer.Option("--width", "-w", help="Width of each nametag in cm.")] = 8.5, 
         update: Annotated[bool, typer.Option(help="Set this flag to update the database before generating the nametags.")] = False, 
@@ -41,8 +41,7 @@ def main(
         experience_emoji_path: Annotated[Path, typer.Option("--experience-emoji-path", "--eep", help="Path to the json file mapping a number of competitions to an emoji.")] = "experience_emoji.json", 
         people_emoji_path: Annotated[Path, typer.Option("--people-emoji-path", "--pep", help="Path to the json file mapping wca id to an emoji.")] = "people_emoji.json", 
         cid_modulo_emoji_path: Annotated[Path, typer.Option("--cid-modulo-emoji-path", "--cep", help="Path to the json file mapping the competitor id to an emoji.")] = "cid_modulo_emoji.json", 
-        format: Annotated[str, typer.Option(help="Page format to use for printing")] = "A4",
-        interactive: Annotated[bool, typer.Option(help="Run an http server that serves and reloads the template everytime it is changed. Canges to the emoji currently need a restart.")] = True
+        papersize: Annotated[str, typer.Option(help="Paper size as standard format or measurements, some examples: A4, Letter, 20cm 30cm, 4in 5in")] = "A4",
     ):    
     from taghtml.datahandler import update_data, CompetitorData
     from taghtml.jinjarenderer import JinjaRenderer
@@ -54,19 +53,21 @@ def main(
         cod = p.add_task("Computing data.")
         comp_data = CompetitorData(comp_id)
         p.update(cod, completed=100)
-        r = JinjaRenderer(width, height, template_path, experience_emoji_path, people_emoji_path, cid_modulo_emoji_path, format)
-        os.makedirs(output_path.parent, exist_ok=True)
-        rth =  p.add_task("Rendering to HTML.")
-        r.render_file(comp_data, output_path)
-        p.update(rth, completed=100)
-    
-    if interactive:
+        r = JinjaRenderer(width, height, template_path, experience_emoji_path, people_emoji_path, cid_modulo_emoji_path, papersize)
+        if output_path:
+            rth =  p.add_task("Rendering to HTML.")
+            os.makedirs(output_path.parent, exist_ok=True)
+            r.render_file(comp_data, output_path)
+            p.update(rth, completed=100)
+        else:
+            r.setup(comp_data)
+    if not output_path:
         import fastapi
         from fastapi.staticfiles import StaticFiles
         server = fastapi.FastAPI()
         @server.get("/")
-        def render():
-            return fastapi.responses.HTMLResponse(r.render())
+        def render(tag_width: float | None = None, tag_height: float | None = None):
+            return fastapi.responses.HTMLResponse(r.render(tag_width, tag_height))
         import uvicorn
         server.mount("/styles", StaticFiles(directory="styles", html=True), name="styles")
         server.mount("/graphics", StaticFiles(directory="graphics", html=True), name="graphics")

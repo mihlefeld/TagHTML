@@ -35,9 +35,10 @@ class Assignment:
     round: int
     group: int
     role: str
-    start_end_time: str
     start_time: datetime.datetime
     end_time: datetime.datetime
+    group_start_time: datetime.datetime
+    group_end_time: datetime.datetime
     room_name: str
 
 
@@ -102,12 +103,16 @@ class CompetitorData:
                                 continue
                             start_time = datetime.datetime.strptime(activity["startTime"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.UTC).astimezone()
                             end_time = datetime.datetime.strptime(activity["endTime"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.UTC).astimezone()
+                            group_start_time = datetime.datetime.strptime(child_activity["startTime"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.UTC).astimezone()
+                            group_end_time = datetime.datetime.strptime(child_activity["endTime"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.UTC).astimezone()
                             activities[child_activity['id']] = {
                                 'event': event,
                                 'round': int(round_[1:]),
                                 'group': int(group[1:]),
                                 'start_end_time': f"{start_time.strftime("%H:%M")} - {end_time.strftime("%H:%M")}",
                                 'start_time': start_time,
+                                'group_start_time': group_start_time,
+                                'group_end_time': group_end_time,
                                 'end_time': end_time,
                                 'room_name': room['name'].lower().replace(' ', '-')
                             }
@@ -129,7 +134,18 @@ class CompetitorData:
                     if role not in ["competitor", "runner", "judge", "scrambler", "delegate", "lead"]:
                         continue
 
-                    person_assignments.append(Assignment(activity['event'], activity['round'], activity['group'], role.replace("staff-", ""), activity['start_end_time'], activity['start_time'], activity['end_time'], activity['room_name']))
+                    person_assignments.append(Assignment(
+                            event=activity['event'], 
+                            round=activity['round'],
+                            group=activity['group'], 
+                            role=role.replace("staff-", ""), 
+                            start_time=activity['start_time'], 
+                            end_time=activity['end_time'], 
+                            group_start_time=activity['group_start_time'], 
+                            group_end_time=activity['group_end_time'],
+                            room_name=activity['room_name']
+                        )
+                    )
                 except KeyError as e:
                     warnings.warn(f"Assignments other than competitor/judge/scrambler are not yet supported {assignment}")
             competitor_assignments[person['registrantId']] = person_assignments

@@ -15,7 +15,8 @@ dependencies = [
     "typer",
     "beautifulsoup4",
     "fastapi",
-    "qrcode"
+    "qrcode",
+    "papersize"
 ]
 
 [project.scripts]
