@@ -26,14 +26,25 @@ Full help text:
 ```
 
 
-The templating engine is based on [jinja](https://jinja.palletsprojects.com/en/stable/)
+The templating engine is based on [jinja](https://jinja.palletsprojects.com/en/stable/) and leaves a lot of freedom but the very basic structure of using pages and tag divs should probably stay the same.
+The "flex direction row-reverse" is only important for 2 sided printing. If you know your printer needs something else, you can change it.
 ```
-<div id="page-example" class="page">
-    <div id="front-tag" class="tag left-border top-border">
+{% for page in pages %}
+<div class="page">
+    {% for competitor in page %}
+    <div class="tag">
+        do anything here
     </div>
-    <div id="back-tag" class="tag left-border top-border">
-    </div>
+    {% endfor %}
 </div>
+<div class="page" style="flex-direction: row-reverse;">
+    {% for competitor in page %}
+    <div class="tag">
+        do anything here
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
 ```
 
 
