@@ -17,6 +17,7 @@ dependencies = [
     "fastapi",
     "qrcode",
     "papersize",
+    "uvicorn"
 ]
 
 [project.scripts]
